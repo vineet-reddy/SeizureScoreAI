@@ -1,0 +1,12 @@
+anthropic
+jupyter
+pandas
+google.generativeai
+neo4j
+spacy
+scispacy
+negspacy
+nltk
+num2words                 
+streamlit
+dotenv
