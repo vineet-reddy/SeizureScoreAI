@@ -1,10 +1,8 @@
-# EngelAI
+# SeizureScoreAI
 
 Knowledge Graph + RAG system with LLMs to predict Engel scores for seizure outcomes.
 
 This project builds upon an original AI ATL Hackathon project developed by [Vineet Reddy](https://github.com/vineet-reddy), [Viresh Pati](https://github.com/vireshpati), [MukProgram](https://github.com/MukProgram), and [Sachi Goel](https://github.com/computer-s-2). 
-
-[Ananda Badari](https://github.com/abadari3) helped develop the logic for the knowledge graph predicting ILAE and Engel scores.
 
 The hackathon prototype served as a foundation for this more comprehensive system, which now aims to predict Engel scores from clinical notes in order to assist with seizure outcome assessments.
 
