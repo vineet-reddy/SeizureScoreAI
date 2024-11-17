@@ -13,10 +13,68 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # Initialize Swarm client
 client = Swarm()
 
+# Define Agent 1: Clinical Information Extractor
+def agent_1_instructions(context_variables):
+    return """
+You are a clinical information extractor. Your task is to extract the following entities from the provided clinical note, quoting the exact text from the note that supports each entity.
+
+Entities to extract:
+
+1. **Presence of seizure freedom** (Yes/No/I don't know)
+2. **Presence of auras** (Yes/No/I don't know)
+3. **Baseline seizure days (pre-treatment)** (Numeric value or "I don't know")
+4. **Seizure days per year (post-treatment)** (Numeric value or "I don't know")
+
+For each entity, provide:
+
+- **Value**: As specified above.
+- **Supporting text**: Exact quote from the clinical note that supports the value.
+
+**Important Guidelines:**
+
+- **Use only the information in the clinical note**. Do not add any information not present.
+- **Quote the supporting text exactly** as it appears in the clinical note.
+- **Do not paraphrase, summarize, or interpret** beyond the given text.
+- If the information is **not present or cannot be determined**, set the value to "I don't know" and the supporting text to "Not found in the clinical note."
+
+**Output Format:**
+
+Provide **only** the extracted entities in the following JSON format (without any additional text):
+
+{{
+  "presence_of_seizure_freedom": {{
+    "value": "...",
+    "supporting_text": "..."
+  }},
+  "presence_of_auras": {{
+    "value": "...",
+    "supporting_text": "..."
+  }},
+  "baseline_seizure_days": {{
+    "value": "...",
+    "supporting_text": "..."
+  }},
+  "seizure_days_per_year": {{
+    "value": "...",
+    "supporting_text": "..."
+  }}
+}}
+
+**Clinical Note:**
+
+{clinical_note}
+
+""".format(clinical_note=context_variables.get('clinical_note', ''))
+
+agent_1 = Agent(
+    name="Clinical Information Extractor",
+    instructions=agent_1_instructions
+)
+
 # Define Agent 2: ILAE Score Calculator
 def agent_2_instructions(context_variables):
-    return f"""
-You are a medical expert specializing in epilepsy. Your task is to calculate the ILAE score based on the provided clinical information. Use the ILAE Outcome Scale criteria below to determine the correct score. Provide detailed reasoning for each entity influencing the score.
+    return """
+You are a medical expert specializing in epilepsy. Your task is to calculate the ILAE score based on the provided clinical information extracted from the clinical note. Use the ILAE Outcome Scale criteria below to determine the correct score. Provide detailed reasoning for each entity influencing the score, citing the exact text from the clinical note that supports your reasoning.
 
 **ILAE Outcome Scale:**
 - **Class 1**: Completely seizure free; no auras
@@ -26,15 +84,35 @@ You are a medical expert specializing in epilepsy. Your task is to calculate the
 - **Class 5**: Less than 50% reduction of baseline seizure days; ± auras
 - **Class 6**: More than 100% increase of baseline seizure days; ± auras
 
-**Extracted Entities:**
-1. Presence of seizure freedom: {context_variables.get('presence_of_seizure_freedom', "I don't know")}
-2. Presence of auras: {context_variables.get('presence_of_auras', "I don't know")}
-3. Baseline seizure days (pre-treatment): {context_variables.get('baseline_seizure_days', "I don't know")}
-4. Seizure days per year (post-treatment): {context_variables.get('seizure_days_per_year', "I don't know")}
-5. Percent reduction in seizure days: {context_variables.get('percent_reduction_in_seizure_days', "I don't know")}
+**Extracted Entities and Supporting Texts:**
+1. Presence of seizure freedom: {presence_of_seizure_freedom}
+   - Supporting text: {supporting_text_seizure_freedom}
+2. Presence of auras: {presence_of_auras}
+   - Supporting text: {supporting_text_auras}
+3. Baseline seizure days (pre-treatment): {baseline_seizure_days}
+   - Supporting text: {supporting_text_baseline}
+4. Seizure days per year (post-treatment): {seizure_days_per_year}
+   - Supporting text: {supporting_text_post_treatment}
+5. Percent reduction in seizure days: {percent_reduction}
 
-Calculate the ILAE score using this information, and provide detailed reasoning for each entity influencing the score.
-    """
+**Instructions:**
+- Use the provided information to calculate the ILAE score.
+- Provide detailed reasoning for each entity influencing the score.
+- Cite the supporting texts in your reasoning.
+- If any information is uncertain or not available, acknowledge this in your reasoning and proceed based on the available data.
+
+Calculate the ILAE score using this information.
+""".format(
+    presence_of_seizure_freedom=context_variables.get('presence_of_seizure_freedom', "I don't know"),
+    supporting_text_seizure_freedom=context_variables.get('supporting_texts', {}).get('presence_of_seizure_freedom', "Not provided"),
+    presence_of_auras=context_variables.get('presence_of_auras', "I don't know"),
+    supporting_text_auras=context_variables.get('supporting_texts', {}).get('presence_of_auras', "Not provided"),
+    baseline_seizure_days=context_variables.get('baseline_seizure_days', "I don't know"),
+    supporting_text_baseline=context_variables.get('supporting_texts', {}).get('baseline_seizure_days', "Not provided"),
+    seizure_days_per_year=context_variables.get('seizure_days_per_year', "I don't know"),
+    supporting_text_post_treatment=context_variables.get('supporting_texts', {}).get('seizure_days_per_year', "Not provided"),
+    percent_reduction=context_variables.get('percent_reduction_in_seizure_days', "I don't know")
+)
 
 agent_2 = Agent(
     name="ILAE Score Calculator",
@@ -51,45 +129,6 @@ def calculate_ilae_score(context_variables):
         max_turns=5
     )
     return ilae_response
-
-# Define Agent 1: Clinical Information Extractor
-def agent_1_instructions(context_variables):
-    return f"""
-You are a clinical information extractor. Your task is to extract the following entities from the clinical note provided:
-
-1. Presence of seizure freedom.
-2. Presence of auras.
-3. Baseline seizure days (pre-treatment).
-4. Seizure days per year (post-treatment).
-
-Please ensure that:
-- **Baseline seizure days** refers to the number of seizure days per year before any treatment or surgery (pre-treatment).
-- **Seizure days per year** refers to the number of seizure days per year after treatment or surgery (post-treatment).
-
-Clinical Note:
-{context_variables.get('clinical_note', '')}
-
-Use the clinical note to extract these entities accurately. If any entity information is missing or not explicitly stated in the clinical note, respond with "I don't know" for that particular entity.
-
-**Important:**
-- Output **only** the extracted entities in the following JSON format, without any additional text, explanations, or code fences.
-- Do **not** include any markdown formatting or code blocks.
-
-JSON Format:
-{{
-  "presence_of_seizure_freedom": "...",
-  "presence_of_auras": "...",
-  "baseline_seizure_days": "...",
-  "seizure_days_per_year": "..."
-}}
-
-Replace the '...' with the appropriate values.
-"""
-
-agent_1 = Agent(
-    name="Clinical Information Extractor",
-    instructions=agent_1_instructions
-)
 
 # Wrap the main processing logic into a function
 def process_clinical_note(clinical_note):
@@ -118,23 +157,36 @@ def process_clinical_note(clinical_note):
     # Parse the output and update context_variables
     try:
         extracted_entities = json.loads(agent1_output_cleaned)
-        context_variables.update(extracted_entities)
-    except json.JSONDecodeError:
+        # Update context_variables with the 'value' of each entity
+        context_variables['presence_of_seizure_freedom'] = extracted_entities['presence_of_seizure_freedom']['value']
+        context_variables['presence_of_auras'] = extracted_entities['presence_of_auras']['value']
+        context_variables['baseline_seizure_days'] = extracted_entities['baseline_seizure_days']['value']
+        context_variables['seizure_days_per_year'] = extracted_entities['seizure_days_per_year']['value']
+        # Store the supporting texts
+        context_variables['supporting_texts'] = {
+            'presence_of_seizure_freedom': extracted_entities['presence_of_seizure_freedom']['supporting_text'],
+            'presence_of_auras': extracted_entities['presence_of_auras']['supporting_text'],
+            'baseline_seizure_days': extracted_entities['baseline_seizure_days']['supporting_text'],
+            'seizure_days_per_year': extracted_entities['seizure_days_per_year']['supporting_text'],
+        }
+    except (KeyError, json.JSONDecodeError):
         return "Failed to parse extracted information. Please ensure the clinical note is properly formatted."
 
     # Calculate the percent reduction in seizure days using the formula
     try:
-        baseline_seizure_days_str = extracted_entities['baseline_seizure_days']
-        seizure_days_per_year_str = extracted_entities['seizure_days_per_year']
+        baseline_seizure_days_str = context_variables['baseline_seizure_days']
+        seizure_days_per_year_str = context_variables['seizure_days_per_year']
 
-        if baseline_seizure_days_str.lower() == "i don't know" or seizure_days_per_year_str.lower() == "i don't know":
+        if (baseline_seizure_days_str.lower() == "i don't know" or
+            seizure_days_per_year_str.lower() == "i don't know"):
             percent_reduction = "I don't know"
+            context_variables['percent_reduction_in_seizure_days'] = percent_reduction
         else:
             baseline_seizure_days = float(baseline_seizure_days_str)
             seizure_days_per_year = float(seizure_days_per_year_str)
-            percent_reduction = ((seizure_days_per_year - baseline_seizure_days) / baseline_seizure_days)
+            percent_reduction = ((baseline_seizure_days - seizure_days_per_year) / baseline_seizure_days) * 100
             context_variables['percent_reduction_in_seizure_days'] = percent_reduction
-    except (KeyError, ValueError):
+    except (ValueError, TypeError):
         context_variables['percent_reduction_in_seizure_days'] = "I don't know"
 
     # Calculate the ILAE score using Agent 2
