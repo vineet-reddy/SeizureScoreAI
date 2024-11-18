@@ -5,10 +5,13 @@ from dotenv import load_dotenv
 import json
 import re
 
-load_dotenv()  # Load environment variables from .env
+# Try to load .env file, but don't fail if it doesn't exist (for cloud deployment)
+load_dotenv(verbose=True)
 
-# Set up OpenAI API key
-openai.api_key = os.getenv("OPENAI_API_KEY")
+# Get API keys from environment variables
+openai.api_key = os.environ.get("OPENAI_API_KEY")
+if not openai.api_key:
+    raise ValueError("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
 
 # Initialize Swarm client
 client = Swarm()

@@ -21,3 +21,9 @@ __pycache__/
 dist/
 build/
 *.egg-info/
+
+# Generated notes
+generated_notes/
+
+# Deprecated code
+deprecated_code/
