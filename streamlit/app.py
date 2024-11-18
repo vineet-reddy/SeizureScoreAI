@@ -35,8 +35,8 @@ uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", typ
 
 uploaded_file_string = uploaded_file.read().decode("utf-8") if uploaded_file else ""
 
-# Split into 3 columns
-col1, col2, col3 = st.columns([3, 2, 4])
+# Adjusted columns
+col1, col2, col3 = st.columns([4, 0.1, 5.9])
 
 with col1:
     st.title("ILAE Score Calculator")
@@ -77,45 +77,40 @@ with col1:
     else:
         st.write("Please upload a clinical note to calculate the ILAE score.")
 
+# Add col2 with vertical divider
+with col2:
+    st.markdown(
+        '''
+        <style>
+        .divider {
+            border-right: 2px solid #e0e0e0;
+            height: 100%;
+            position: absolute;
+            left: 50%;
+        }
+        </style>
+        <div class="divider"></div>
+        ''',
+        unsafe_allow_html=True
+    )
+
 # Move the clinical note display to the third column
 with col3:
     if uploaded_file_string:
         st.subheader("Clinical Note")
         st.write(uploaded_file_string)
 
-# Hide Streamlit style
+# Hide Streamlit style elements
 hide_streamlit_style = """
-                    <style>
-                    div[data-testid="stToolbar"] {
-                    visibility: hidden;
-                    height: 0%;
-                    position: fixed;
-                    }
-                    div[data-testid="stDecoration"] {
-                    visibility: hidden;
-                    height: 0%;
-                    position: fixed;
-                    }
-                    div[data-testid="stStatusWidget"] {
-                    visibility: hidden;
-                    height: 0%;
-                    position: fixed;
-                    }
-                    #MainMenu {
-                    visibility: hidden;
-                    height: 0%;
-                    }
-                    header {
-                    visibility: hidden;
-                    height: 0%;
-                    }
-                    footer {
-                    visibility: hidden;
-                    height: 0%;
-                    position: fixed;
-                    }
-                    </style>
-                    """
+    <style>
+    div[data-testid="stToolbar"] {visibility: hidden; height: 0%; position: fixed;}
+    div[data-testid="stDecoration"] {visibility: hidden; height: 0%; position: fixed;}
+    div[data-testid="stStatusWidget"] {visibility: hidden; height: 0%; position: fixed;}
+    #MainMenu {visibility: hidden; height: 0%;}
+    header {visibility: hidden; height: 0%;}
+    footer {visibility: hidden; height: 0%; position: fixed;}
+    </style>
+    """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # Custom styling for the Streamlit app
@@ -125,23 +120,20 @@ st.markdown(
     .stApp {
         background-color: #F0F2F6;
     }
-
     section[data-testid="stSidebar"] {
         background-color: #bacdf2;
+        padding-top: 0rem;
     }
-
     div.stButton > button {
         color: #ffffff;
         background-color: #0072B2;
         border-radius: 5px;
-        padding: .5em 1em;
+        padding: 0.5em 1em;
     }
-
     div.stButton > button:hover {
         background-color: #005282;
         border-color: black;
     }
-
     h1, h2, h3 {
         color: #395ca0;
     }
@@ -151,12 +143,10 @@ st.markdown(
     p {
         color: #333333;
     }
-    section[data-testid="stSidebar"] {
-        padding-top: 0rem;
-    }
     header {visibility: hidden;}
-
-    div.block-container{padding-top:2rem;}
+    div.block-container {
+        padding-top: 2rem;
+    }
     </style>
     """,
     unsafe_allow_html=True
