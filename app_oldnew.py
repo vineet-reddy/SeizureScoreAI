@@ -35,8 +35,7 @@ uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", typ
 
 uploaded_file_string = uploaded_file.read().decode("utf-8") if uploaded_file else ""
 
-# Split into 3 columns
-col1, col2, col3 = st.columns([3, 2, 4])
+col1, col2 = st.columns([3, 2])
 
 with col1:
     st.title("ILAE Score Calculator")
@@ -77,8 +76,7 @@ with col1:
     else:
         st.write("Please upload a clinical note to calculate the ILAE score.")
 
-# Move the clinical note display to the third column
-with col3:
+with col2:
     if uploaded_file_string:
         st.subheader("Clinical Note")
         st.write(uploaded_file_string)
