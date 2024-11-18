@@ -1,0 +1,97 @@
+Patient Name: Sarah Johnson
+DOB: 05/15/1986
+Date of Visit: 11/17/2024
+MRN: 12345678
+Referring Physician: Dr. Emily Carter, Primary Care Physician
+Epilepsy Specialist: Dr. Michael Reynolds, MD, PhD
+
+Subjective:
+
+Reason for Visit:
+Postoperative follow-up for epilepsy management following resective surgery for drug-resistant focal epilepsy.
+
+History of Present Illness:
+Sarah Johnson is a 38-year-old right-handed female with a history of focal epilepsy initially diagnosed at the age of 22. Her seizures were characterized by a rising epigastric sensation, impaired awareness, and occasional secondary generalization. Despite trials of multiple antiepileptic medications, including levetiracetam, lamotrigine, and carbamazepine, her seizures remained uncontrolled, occurring multiple times per month.
+
+Preoperative evaluation, including high-resolution MRI, revealed right mesial temporal sclerosis. Video-EEG monitoring localized seizure onset to the right mesial temporal region. After multidisciplinary case review, the patient underwent a right anterior temporal lobectomy on 05/01/2024.
+
+Since the procedure, Sarah reports being completely seizure-free with no auras or clinical events resembling seizures. She has resumed normal activities, including driving and working full-time as a graphic designer. Her sleep quality and overall mood have improved, and she denies any neurological complaints. She is currently maintained on levetiracetam (1000 mg twice daily) without significant side effects.
+
+Sarah expresses satisfaction with her progress and is eager to discuss the possibility of tapering her antiepileptic medication if her seizure freedom persists.
+
+Past Medical History:
+- Drug-resistant focal epilepsy secondary to right mesial temporal sclerosis
+- Migraine headaches (resolved after surgery)
+- Mild anxiety, previously well-controlled
+
+Past Surgical History:
+- Right anterior temporal lobectomy (05/01/2024)
+
+Family History:
+- No family history of epilepsy, neurological disorders, or psychiatric illnesses
+
+Social History:
+- Occupation: Full-time graphic designer
+- Lives with her spouse and two children (ages 8 and 10)
+- Non-smoker, denies alcohol or recreational drug use
+- Regular exercise (yoga and walking 4-5 times per week)
+
+Review of Systems:
+- Neurological: No seizures, auras, headaches, or dizziness.
+- Psychiatric: No depression or anxiety symptoms.
+- General: No fatigue, weight changes, or fever.
+- Other Systems: Denies chest pain, palpitations, gastrointestinal issues, or urinary complaints.
+
+Objective:
+
+Vitals:
+- Blood Pressure: 118/72 mmHg
+- Heart Rate: 72 bpm
+- Weight: 68 kg (150 lbs)
+- Height: 165 cm (5’5’’)
+
+Physical Examination:
+- General: Alert, cooperative, and in no acute distress.
+- Neurological:
+  - Mental Status: Fully oriented to person, place, and time. Fluent speech, with no deficits noted in informal memory testing.
+  - Cranial Nerves: Intact, including normal visual fields and extraocular movements.
+  - Motor: Normal bulk and tone. Strength 5/5 in all extremities.
+  - Sensory: Normal to light touch, pinprick, and vibration bilaterally.
+  - Reflexes: Symmetric 2+ throughout. Plantar reflexes downgoing bilaterally.
+  - Coordination: No dysmetria or tremor. Finger-nose and heel-to-shin tests intact.
+  - Gait: Normal, with steady balance. Negative Romberg test.
+
+Diagnostic Studies Reviewed:
+- MRI Brain with Contrast (08/01/2024): Post-surgical changes consistent with right anterior temporal lobectomy. No residual hippocampal tissue or abnormal signal in adjacent structures.
+- EEG (10/15/2024): Normal awake and sleep tracings. No interictal epileptiform discharges or focal slowing.
+
+Assessment and Plan:
+
+Assessment:
+Sarah Johnson is a 38-year-old female with a history of drug-resistant focal epilepsy secondary to right mesial temporal sclerosis, now 6.5 months post right anterior temporal lobectomy. She has experienced excellent postoperative seizure control with significant improvement in her quality of life. There are no current neurological, psychological, or systemic concerns. Post-surgical imaging and EEG support these clinical findings.
+
+Plan:
+1. Continue Antiepileptic Medication:
+   - Levemir (levetiracetam) 1000 mg twice daily. Discuss gradual tapering in 6 months if seizure freedom persists. Provided patient education on seizure recurrence warning signs.
+
+2. Lifestyle Counseling:
+   - Driving: Patient remains compliant with [state-specific] driving laws. Encouraged ongoing compliance with reporting requirements.
+   - Safety precautions: Reinforced importance of adhering to safety measures during swimming, cooking, and other potentially hazardous activities.
+   - Discussed lifestyle factors, including stress management, adequate sleep, and maintaining hydration.
+
+3. Follow-Up Testing:
+   - Repeat MRI and EEG planned for May 2025 (12 months post-surgery).
+
+4. Referral Options:
+   - Offered neuropsychological evaluation for formal cognitive testing, although the patient currently denies subjective memory or executive function concerns.
+
+5. Next Visit:
+   - Follow-up appointment scheduled for 6 months (May 2025) to reassess seizure control, imaging, and potential medication tapering.
+
+Patient Education:
+Time was spent discussing the importance of medication adherence, safety precautions, and consistent follow-up. The patient verbalized understanding and appeared optimistic about her continued recovery and excellent postoperative progress.
+
+Provider Signature:
+Dr. Michael Reynolds, MD, PhD
+Epilepsy Specialist
+[Clinic Name and Contact Information]
