@@ -66,7 +66,6 @@ Provide **only** the extracted entities in the following JSON format (without an
 
 """.format(clinical_note=context_variables.get('clinical_note', ''))
 
-
 agent_1 = Agent(
     name="Clinical Information Extractor",
     instructions=agent_1_instructions
@@ -101,16 +100,6 @@ You are a medical expert specializing in epilepsy. Your task is to calculate the
 - Provide detailed reasoning for each entity influencing the score.
 - Cite the supporting texts in your reasoning.
 - If any information is uncertain or not available, acknowledge this in your reasoning and proceed based on the available data.
-- **If you cannot determine the ILAE score based on the available data, set `"ilae_score"` to `"indeterminate"`.**
-
-**Output Format:**
-
-Provide the output in the following JSON format (without any additional text):
-
-{{
-  "ilae_score": "...",
-  "detailed_explanation": "..."
-}}
 
 Calculate the ILAE score using this information.
 """.format(
@@ -125,43 +114,9 @@ Calculate the ILAE score using this information.
     percent_reduction=context_variables.get('percent_reduction_in_seizure_days', "I don't know")
 )
 
-
 agent_2 = Agent(
     name="ILAE Score Calculator",
     instructions=agent_2_instructions
-)
-
-# Define Agent 3: Concise ILAE Score Reporter
-def agent_3_instructions(context_variables):
-    return """
-You are an assistant tasked with providing a concise and clear explanation of the ILAE score based on the detailed explanation from the previous calculation. Do not recalculate or re-present the ILAE score. Your role is to summarize the detailed explanation into a concise explanation suitable for display on the frontend.
-
-**Instructions:**
-
-- Summarize the detailed explanation provided.
-- Do not recalculate or re-present the ILAE score.
-- Provide the concise explanation without any unnecessary details.
-
-**Output Format:**
-
-Provide the output in the following JSON format (without any additional text):
-
-{{
-  "concise_explanation": "..."
-}}
-
-**Detailed Explanation from the previous calculation:**
-
-{detailed_explanation}
-
-""".format(
-    detailed_explanation=context_variables.get('detailed_explanation', "Not provided")
-)
-
-
-agent_3 = Agent(
-    name="Concise ILAE Score Reporter",
-    instructions=agent_3_instructions
 )
 
 # Define the function to calculate the ILAE score
@@ -173,22 +128,7 @@ def calculate_ilae_score(context_variables):
         context_variables=context_variables,
         max_turns=5
     )
-    # Extract the assistant's last message
-    assistant_message = ilae_response.messages[-1]['content']
-    return assistant_message
-
-# Define the function to generate the concise explanation
-def generate_concise_explanation(context_variables):
-    messages = [{"role": "user", "content": "Please provide a concise explanation of the ILAE score based on the detailed explanation provided."}]
-    concise_response = client.run(
-        agent=agent_3,
-        messages=messages,
-        context_variables=context_variables,
-        max_turns=5
-    )
-    # Extract the assistant's last message
-    assistant_message = concise_response.messages[-1]['content']
-    return assistant_message
+    return ilae_response
 
 # Wrap the main processing logic into a function
 def process_clinical_note(clinical_note):
@@ -252,46 +192,7 @@ def process_clinical_note(clinical_note):
     # Calculate the ILAE score using Agent 2
     ilae_score_response = calculate_ilae_score(context_variables)
 
-    # Parse Agent 2's output
-    ilae_response_cleaned = ilae_score_response.strip()
-    ilae_response_cleaned = re.sub(r'^```(?:json)?\n?', '', ilae_response_cleaned)
-    ilae_response_cleaned = re.sub(r'\n?```$', '', ilae_response_cleaned)
-    ilae_response_cleaned = ilae_response_cleaned.strip()
+    # Collect the final response from Agent 2
+    final_response = "\n".join([message['content'] for message in ilae_score_response.messages if message['role'] == 'assistant'])
 
-    try:
-        ilae_result = json.loads(ilae_response_cleaned)
-        context_variables['ilae_score'] = ilae_result['ilae_score']
-        context_variables['detailed_explanation'] = ilae_result['detailed_explanation']
-    except (KeyError, json.JSONDecodeError):
-        return "Failed to parse ILAE score information. Please ensure the outputs are properly formatted."
-
-    # Generate the concise explanation using Agent 3
-    concise_explanation_response = generate_concise_explanation(context_variables)
-
-    # Parse Agent 3's output
-    concise_response_cleaned = concise_explanation_response.strip()
-    concise_response_cleaned = re.sub(r'^```(?:json)?\n?', '', concise_response_cleaned)
-    concise_response_cleaned = re.sub(r'\n?```$', '', concise_response_cleaned)
-    concise_response_cleaned = concise_response_cleaned.strip()
-
-    try:
-        concise_result = json.loads(concise_response_cleaned)
-        concise_explanation = concise_result['concise_explanation']
-    except (KeyError, json.JSONDecodeError):
-        return "Failed to parse concise explanation. Please ensure the outputs are properly formatted."
-
-    # Store the detailed explanation separately
-    detailed_explanation = context_variables['detailed_explanation']
-
-    # Prepare the final outputs
-    final_output = {
-        "ilae_score": context_variables['ilae_score'],
-        "concise_explanation": concise_explanation
-    }
-
-    detailed_output = {
-        "detailed_explanation": detailed_explanation
-    }
-
-    # Return both outputs
-    return final_output, detailed_output
+    return final_response

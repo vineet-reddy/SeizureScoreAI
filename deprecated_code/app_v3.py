@@ -1,32 +1,19 @@
 import streamlit as st
 import time
 from ilae_backend import process_clinical_note
-import json
-import re  # Import the regular expressions module
 
 st.set_page_config(layout="wide")
 
-# Function to display text
-def display_text_animated(text):
-    st.write(text)
+# Function to animate text appearing word by word
+def display_text_animated(text, delay=0.05):
+    words = text.split()
+    displayed_text = ""
+    placeholder = st.empty()  # Create an empty placeholder for the explanation
 
-# Function to clean up the ILAE score
-def clean_ilae_score(score):
-    if isinstance(score, str):
-        score_lower = score.lower()
-        if 'indeterminate' in score_lower:
-            return 'indeterminate'
-        else:
-            # Try to extract number from the string
-            match = re.search(r'\d+', score)
-            if match:
-                return match.group()
-            else:
-                return 'Not available'
-    elif isinstance(score, int) or isinstance(score, float):
-        return str(score)
-    else:
-        return 'Not available'
+    for word in words:
+        displayed_text += word + " "
+        placeholder.write(displayed_text)  # Update the placeholder with the current text
+        time.sleep(delay)  # Wait for the specified delay
 
 # Main app
 
@@ -48,30 +35,31 @@ with col1:
             with st.spinner('Processing...'):
                 time.sleep(2)  # Simulate processing delay
                 # Call the backend processing function
-                final_output, detailed_output = process_clinical_note(uploaded_file_string)
-                st.session_state['final_output'] = final_output
-                st.session_state['detailed_output'] = detailed_output
+                result = process_clinical_note(uploaded_file_string)
+                st.session_state['result'] = result
                 st.session_state['score_generated'] = True  # Set flag to avoid re-processing
 
-        # Extract the ILAE score and explanations from the result
-        ilae_score_raw = st.session_state['final_output'].get('ilae_score', "Not available")
-        ilae_score = clean_ilae_score(ilae_score_raw)  # Clean up the ILAE score
-        concise_explanation = st.session_state['final_output'].get('concise_explanation', "")
-        detailed_explanation = st.session_state['detailed_output'].get('detailed_explanation', "")
+        # Extract the ILAE score and explanation from the result
+        ilae_score = "Not available"
+        explanation_text = st.session_state['result']
+
+        # Attempt to extract the ILAE score from the result
+        # Assuming the ILAE score is mentioned in a consistent format like "Class X"
+        import re
+        match = re.search(r'Class (\d)', explanation_text)
+        if match:
+            ilae_score = f"Class {match.group(1)}"
 
         st.metric("ILAE Score", ilae_score)
 
         st.write("---")
         st.subheader("Explanation of the Prediction")
 
-        # Display the concise explanation automatically
-        st.write(concise_explanation)
-
-        # Button to show/hide detailed explanation
-        if st.button("Show Detailed Explanation"):
-            display_text_animated(detailed_explanation)
+        # Button to trigger explanation animation
+        if st.button("Show Explanation"):
+            display_text_animated(explanation_text)
         else:
-            st.write("Press the 'Show Detailed Explanation' button to view the detailed reasoning.")
+            st.write("Press the 'Show Explanation' button to view the detailed reasoning.")
 
     else:
         st.write("Please upload a clinical note to calculate the ILAE score.")
