@@ -7,8 +7,3 @@ pillow>=10.0.0
 
 # OpenAI Swarm library
 git+https://github.com/openai/swarm.git
-
-# Additional utilities
-base64
-json
-re 
