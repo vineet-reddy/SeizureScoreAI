@@ -159,26 +159,6 @@ logo = Image.open(logo_path)
 st.sidebar.image(logo, use_column_width=True)
 
 # Add HIPAA warning at the bottom of sidebar
-st.sidebar.markdown("""
-    <div style="
-        background-color: #fff3cd;
-        color: #856404;
-        padding: 0.8rem;
-        border-radius: 8px;
-        border-left: 4px solid #ffeeba;
-        margin: 0.5rem 0 1rem 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        font-size: 0.9em;
-    ">
-        <div style="display: flex; align-items: center; margin-bottom: 0.3rem;">
-            <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚠️</span>
-            <strong>HIPAA Warning</strong>
-        </div>
-        <p style="margin: 0; font-size: 0.85rem; line-height: 1.3;">
-            This service is not HIPAA compliant. Do not upload documents containing Protected Health Information (PHI).
-        </p>
-    </div>
-""", unsafe_allow_html=True)
 
 with col1:
     st.title("ILAE Score Calculator")
