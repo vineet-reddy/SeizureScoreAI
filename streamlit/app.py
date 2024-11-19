@@ -4,6 +4,8 @@ from ilae_backend import process_clinical_note
 import json
 import re  # Import the regular expressions module
 from difflib import SequenceMatcher  # Import for sequence matching
+import base64
+from PIL import Image
 
 st.set_page_config(layout="wide")
 
@@ -49,9 +51,70 @@ def is_similar(a, b, threshold=0.8):
     b_processed = preprocess_sentence(b)
     return SequenceMatcher(None, a_processed, b_processed).ratio() >= threshold
 
+# Add this function after the imports
+def get_file_download_link(filename):
+    try:
+        with open(f"example_notes/{filename}", 'r', encoding='utf-8') as f:
+            file_content = f.read()
+        b64 = base64.b64encode(file_content.encode()).decode()
+        return f'''
+            <a href="data:text/plain;base64,{b64}" download="{filename}" 
+               style="text-decoration:none; margin:0 8px;">
+                <div style="
+                    display: inline-block;
+                    text-align: center;
+                    background-color: #ffffff;
+                    border-radius: 8px;
+                    padding: 12px;
+                    min-width: 80px;
+                    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                    transition: transform 0.2s, box-shadow 0.2s;
+                    cursor: pointer;
+                    border: 1px solid #f0f0f0;
+                    &:hover {{
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+                    }}
+                ">
+                    <div style="
+                        font-size: 32px;
+                        margin-bottom: 8px;
+                        color: #008bb0;
+                    ">📄</div>
+                    <div style="
+                        font-size: 11px;
+                        color: #666;
+                        font-weight: 500;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 100px;
+                    ">{filename}</div>
+                </div>
+            </a>'''
+    except Exception as e:
+        return ""
+
 # Main app
 
 st.sidebar.title("Upload Clinical Note")
+
+st.sidebar.markdown("""
+    <p style='
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    '>Example Notes (Click to Download):</p>
+""", unsafe_allow_html=True)
+
+example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:20px;">'
+for filename in ["ilaeclass1.txt", "ilaeclass2.txt", "ilaeclass3.txt"]:
+    example_files_html += get_file_download_link(filename)
+example_files_html += '</div>'
+st.sidebar.markdown(example_files_html, unsafe_allow_html=True)
+st.sidebar.markdown("<hr style='margin: 0; opacity: 0.2;'>", unsafe_allow_html=True)
+
 uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", type="txt", 
                                        on_change=reset_session_state)
 
@@ -60,8 +123,53 @@ if uploaded_file is not None:
 else:
     uploaded_file_string = ""
 
+# Update the sidebar CSS and logo placement
+st.sidebar.markdown("""
+    <style>
+    section[data-testid="stSidebar"] > div {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    section[data-testid="stSidebar"] > div > div:first-child {
+        flex: 1;
+    }
+    section[data-testid="stSidebar"] img {
+        margin-top: auto;
+        width: 100%;
+        padding: 1rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 # Adjusted columns
 col1, col2, col3 = st.columns([4, 0.1, 5.9])
+
+# Move the HIPAA warning to after the logo
+logo = Image.open("assets/brainmodlab.png")
+st.sidebar.image(logo, use_column_width=True)
+
+# Add HIPAA warning at the bottom of sidebar
+st.sidebar.markdown("""
+    <div style="
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border-left: 4px solid #ffeeba;
+        margin: 0.5rem 0 1rem 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        font-size: 0.9em;
+    ">
+        <div style="display: flex; align-items: center; margin-bottom: 0.3rem;">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚠️</span>
+            <strong>HIPAA Warning</strong>
+        </div>
+        <p style="margin: 0; font-size: 0.85rem; line-height: 1.3;">
+            This service is not HIPAA compliant. Do not upload documents containing Protected Health Information (PHI).
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
 with col1:
     st.title("ILAE Score Calculator")
@@ -72,7 +180,6 @@ with col1:
     if uploaded_file_string:
         if not st.session_state['score_generated']:
             with st.spinner('Processing...'):
-                time.sleep(2)  # Simulate processing delay
                 # Call the backend processing function
                 final_output, detailed_output = process_clinical_note(uploaded_file_string)
                 st.session_state['final_output'] = final_output
@@ -85,7 +192,23 @@ with col1:
         concise_explanation = st.session_state['final_output'].get('concise_explanation', "")
         detailed_explanation = st.session_state['detailed_output'].get('detailed_explanation', "")
 
-        st.metric("ILAE Score", ilae_score)
+        # Replace the styled version with a more compact one
+        st.markdown(f"""
+            <div style="
+                background-color: #F0F2F6;
+                padding: 12px 20px;
+                border-radius: 8px;
+                margin: 10px 0;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                display: inline-block;
+                min-width: 150px;
+                border: 1px solid #e0e0e0;
+                text-align: center;
+            ">
+                <div style="color: #666; font-size: 1.1em; text-align: center;">ILAE Score</div>
+                <div style="color: #008bb0; font-size: 2.5em; font-weight: bold; margin: 5px 0; text-align: center;">{ilae_score}</div>
+            </div>
+        """, unsafe_allow_html=True)
 
         st.write("---")
         st.subheader("Explanation of the Prediction")
@@ -96,8 +219,6 @@ with col1:
         # Button to show/hide detailed explanation
         if st.button("Show Detailed Explanation"):
             display_text_animated(detailed_explanation)
-        else:
-            st.write("Press the 'Show Detailed Explanation' button to view the detailed reasoning.")
 
     else:
         st.write("Please upload a clinical note to calculate the ILAE score.")
