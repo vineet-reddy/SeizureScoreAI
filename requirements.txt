@@ -9,7 +9,6 @@ pillow>=10.0.0
 git+https://github.com/openai/swarm.git
 
 # Additional utilities
-difflib
 base64
 json
 re 
