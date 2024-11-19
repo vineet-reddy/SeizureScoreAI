@@ -1,6 +1,6 @@
 # SeizureScoreAI: Multi-Agent Clinical Reasoning System
 
-A sophisticated multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. The system uses Large Language Models (LLMs) in a structured pipeline to process clinical notes and determine post-surgical outcomes. **The goal is to teach an LLM to reason like an epileptologist.**
+A multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. The system uses Large Language Models (LLMs) in a structured pipeline to process clinical notes and determine post-surgical outcomes. **The goal is to teach an LLM to reason like an epileptologist.**
 
 ## Overview
 
