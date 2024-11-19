@@ -289,7 +289,8 @@ def process_clinical_note(clinical_note):
     # Prepare the final outputs
     final_output = {
         "ilae_score": context_variables['ilae_score'],
-        "concise_explanation": concise_explanation
+        "concise_explanation": concise_explanation,
+        "extracted_entities": extracted_entities
     }
 
     detailed_output = {
