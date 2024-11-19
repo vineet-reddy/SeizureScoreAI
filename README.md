@@ -109,11 +109,10 @@ The system includes a comprehensive set of **synthetically generated test clinic
 
 
 ## Security Considerations
-
+- The system is **not currently HIPAA compliant**. Users must ensure that input clinical notes do not contain any Protected Health Information (PHI) before using the system.
 - API keys are managed through environment variables
 - Never commit `.env` files to version control
 - Streamlit Cloud secrets provide secure deployment
-- Input sanitization is implemented for clinical notes
 
 ## Limitations
 
