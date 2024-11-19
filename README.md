@@ -118,7 +118,10 @@ SeizureScoreAI/
 
 ### Testing
 
-The system includes a comprehensive set of test clinical notes in the `test_notes/` directory, representing various post-surgical outcomes and clinical scenarios.
+### Testing
+
+The system includes a comprehensive set of **synthetically generated test clinical notes** in the `test_notes/` directory, representing various post-surgical outcomes and clinical scenarios. These notes are designed to simulate real-world inputs but **do not contain any Protected Health Information (PHI)**, ensuring compliance with privacy regulations.
+
 
 ## Security Considerations
 
