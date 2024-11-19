@@ -136,12 +136,6 @@ The system includes a comprehensive set of **synthetically generated test clinic
 2. Create a feature branch
 3. Submit a pull request with detailed description of changes
 
-## License
-
-This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
-
-Feel free to use, modify, and distribute the code under the terms of the MIT license. See the `LICENSE` file for more details.
-
 ## Citations
 
 ### Software Citation
