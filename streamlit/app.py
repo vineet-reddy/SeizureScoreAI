@@ -6,6 +6,7 @@ import re  # Import the regular expressions module
 from difflib import SequenceMatcher  # Import for sequence matching
 import base64
 from PIL import Image
+import os  # Added to handle file paths
 
 st.set_page_config(layout="wide")
 
@@ -146,7 +147,12 @@ st.sidebar.markdown("""
 col1, col2, col3 = st.columns([4, 0.1, 5.9])
 
 # Move the HIPAA warning to after the logo
-logo = Image.open("assets/brainmodlab.png")
+
+# Added code to handle the image path 
+script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+logo_path = os.path.join(script_dir, "assets", "brainmodlab.png")  # Build the path to the image
+logo = Image.open(logo_path)
+
 st.sidebar.image(logo, use_column_width=True)
 
 # Add HIPAA warning at the bottom of sidebar
