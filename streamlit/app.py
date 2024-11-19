@@ -127,21 +127,30 @@ if uploaded_file is not None:
 else:
     uploaded_file_string = ""
 
-# Update the sidebar CSS and logo placement
+# Update the sidebar CSS - replace the existing sidebar CSS with this
 st.sidebar.markdown("""
     <style>
     section[data-testid="stSidebar"] > div {
         height: 100vh;
         display: flex;
         flex-direction: column;
+        padding-top: 2rem;  /* Add padding to top */
     }
     section[data-testid="stSidebar"] > div > div:first-child {
-        flex: 1;
+        flex: 0 0 auto;  /* Changed from flex: 1 to prevent stretching */
     }
     section[data-testid="stSidebar"] img {
-        margin-top: auto;
+        margin-top: auto;  /* Push logo to bottom */
         width: 100%;
         padding: 1rem;
+    }
+    /* Add these new styles */
+    .element-container:has(div.stTitle) {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+    div.stFileUploader {
+        padding-top: 1rem;
     }
     </style>
     """, unsafe_allow_html=True)
