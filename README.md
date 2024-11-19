@@ -93,14 +93,23 @@ The system evaluates surgical outcomes based on the following scale[^1]:
 ### Project Structure
 ```
 SeizureScoreAI/
+├── data/
+│   ├── datagen/
+│   │   └── generate_clinic_notes_claudeapi.ipynb  # Test data generation script
+│   └── test_notes/                               # Sample clinical notes (synthetic)
+│       ├── clinic_note_1.txt
+│       ├── clinic_note_2.txt
+│       └── ...
+├── docs/
+│   └── ILAE Knowledge Graph.drawio              # Visual representation of scoring logic
 ├── streamlit/
-│   ├── app.py              # Streamlit frontend
-│   ├── ilae_backend.py     # Multi-agent system
-│   └── config.toml         # Streamlit configuration
-├── datagen/
-│   └── generate_clinic_notes_claudeapi.ipynb  # Test data generation
-├── test_notes/            # Sample clinical notes (do not contain PHI)
-└── requirements.txt
+│   ├── app.py                                   # Streamlit frontend
+│   ├── ilae_backend.py                          # Multi-agent system
+│   └── config.toml                              # Streamlit configuration
+├── .env                                         # Environment variables (not in repo)
+├── .gitignore                                   # Git ignore rules
+├── README.md                                    # Project documentation
+└── requirements.txt                             # Python dependencies
 ```
 
 ### Testing
