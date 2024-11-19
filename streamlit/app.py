@@ -127,27 +127,50 @@ if uploaded_file is not None:
 else:
     uploaded_file_string = ""
 
-# Update the sidebar CSS and logo placement
+# Replace the existing sidebar CSS with this updated version
 st.sidebar.markdown("""
     <style>
+    /* Base sidebar container */
     section[data-testid="stSidebar"] > div {
-        height: 100vh;
+        padding-top: 1rem;
+        background-color: #b3dde8;
+    }
+    
+    /* Main content container in sidebar */
+    section[data-testid="stSidebar"] > div:first-child {
         display: flex;
         flex-direction: column;
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow-y: auto;
     }
+    
+    /* Content wrapper */
     section[data-testid="stSidebar"] > div > div:first-child {
         flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 1rem;
     }
+    
+    /* Logo container */
     section[data-testid="stSidebar"] img {
+        width: 90%;
+        margin: 1rem auto;
+        display: block;
         margin-top: auto;
-        width: 100%;
-        padding: 1rem;
+    }
+    
+    /* File uploader spacing */
+    section[data-testid="stSidebar"] .stFileUploader {
+        margin-bottom: 1rem;
     }
     </style>
     """, unsafe_allow_html=True)
 
 # Adjusted columns
-col1, col2, col3 = st.columns([4, 0.1, 5.9])
+col1, col2, col3 = st.columns([4.5, 0.1, 5.4])
 
 # Move the HIPAA warning to after the logo
 
@@ -314,6 +337,10 @@ st.markdown(
     header {visibility: hidden;}
     div.block-container {
         padding-top: 2rem;
+    }
+    h1 {
+        white-space: nowrap;
+        font-size: 2.3rem;
     }
     </style>
     """,
