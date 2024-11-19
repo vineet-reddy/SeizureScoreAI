@@ -112,7 +112,7 @@ SeizureScoreAI/
 │   └── config.toml         # Streamlit configuration
 ├── datagen/
 │   └── generate_clinic_notes_claudeapi.ipynb  # Test data generation
-├── test_notes/            # Sample clinical notes
+├── test_notes/            # Sample clinical notes (do not contain PHI)
 └── requirements.txt
 ```
 
