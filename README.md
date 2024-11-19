@@ -12,7 +12,7 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
    - Baseline seizure frequency
    - Post-treatment seizure frequency
 
-2. **ILAE Score Calculator**: Applies medical expertise to:
+2. **ILAE Score Calculator**: Applies expertise to:
    - Process extracted clinical information
    - Calculate ILAE outcome scores based on standard criteria
    - Provide detailed reasoning for score determination
@@ -27,7 +27,7 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 ### Components
 
 - **Frontend**: Streamlit interface for clinical note input and result display
-- **Backend**: Multi-agent system using OpenAI and Claude APIs
+- **Backend**: Multi-agent system using OpenAI APIs
 - **Agent Pipeline**: Sequential processing through specialized agents
 - **Structured Output**: JSON-formatted data for consistent processing
 
@@ -42,7 +42,7 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/SeizureScoreAI.git
+   git clone https://github.com/vineet-reddy/SeizureScoreAI
    cd SeizureScoreAI
    ```
 
