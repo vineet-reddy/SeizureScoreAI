@@ -104,6 +104,7 @@ You are a medical expert specializing in epilepsy. Your task is to calculate the
 - Provide detailed reasoning for each entity influencing the score.
 - Cite the supporting texts in your reasoning.
 - If any information is uncertain or not available, acknowledge this in your reasoning and proceed based on the available data.
+- **Note**: If the patient has only auras and no other seizures, classify them as **Class 2**, even if baseline and post-treatment seizure days are unknown.
 - **If you cannot determine the ILAE score based on the available data, set `"ilae_score"` to `"indeterminate"`.**
 
 **Output Format:**
