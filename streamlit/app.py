@@ -55,7 +55,10 @@ def is_similar(a, b, threshold=0.8):
 # Add this function after the imports
 def get_file_download_link(filename):
     try:
-        with open(f"example_notes/{filename}", 'r', encoding='utf-8') as f:
+        # Added code to handle the file path
+        script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+        file_path = os.path.join(script_dir, "example_notes", filename)  # Build the path to the file
+        with open(file_path, 'r', encoding='utf-8') as f:
             file_content = f.read()
         b64 = base64.b64encode(file_content.encode()).decode()
         return f'''
