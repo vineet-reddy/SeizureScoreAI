@@ -158,16 +158,35 @@ st.sidebar.markdown("""
 # Adjusted columns
 col1, col2, col3 = st.columns([4.5, 0.1, 5.4])
 
-# Move the HIPAA warning to after the logo
-
 # Added code to handle the image path 
 script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
 logo_path = os.path.join(script_dir, "assets", "brainmodlab.png")  # Build the path to the image
 logo = Image.open(logo_path)
 
-st.sidebar.image(logo)
+# Add HIPAA warning before the logo
+st.sidebar.markdown("""
+    <div style="
+        background-color: #fff3cd;
+        color: #856404;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border-left: 4px solid #ffeeba;
+        margin: 0.5rem 0 1rem 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        font-size: 0.9em;
+    ">
+        <div style="display: flex; align-items: center; margin-bottom: 0.3rem;">
+            <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚠️</span>
+            <strong>HIPAA Warning</strong>
+        </div>
+        <p style="margin: 0; font-size: 0.85rem; line-height: 1.3;">
+            This service is not HIPAA compliant. Do not upload documents containing Protected Health Information (PHI).
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
-# Add HIPAA warning at the bottom of sidebar
+# Display logo after the warning
+st.sidebar.image(logo)
 
 with col1:
     st.title("ILAE Score Calculator")
