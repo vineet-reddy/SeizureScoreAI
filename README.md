@@ -129,7 +129,9 @@ The system includes a comprehensive set of **synthetically generated test clinic
 
 ## License
 
-[Your chosen license]
+This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+Feel free to use, modify, and distribute the code under the terms of the MIT license. See the `LICENSE` file for more details.
 
 ## Citations
 
