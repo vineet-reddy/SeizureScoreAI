@@ -100,98 +100,48 @@ def get_file_download_link(filename):
         return ""
 
 # Main app
-# First, create a sidebar container
-sidebar = st.sidebar
 
-# Update the CSS to force content to start from the top
-sidebar.markdown("""
-    <style>
-    [data-testid="stSidebar"][aria-expanded="true"] {
-        padding-top: 0;
-    }
-    [data-testid="stSidebar"][aria-expanded="true"] > div:first-child {
-        padding-top: 0;
-    }
-    [data-testid="stSidebar"] [data-testid="stMarkdown"] {
-        padding-top: 0;
-    }
-    </style>
+st.sidebar.title("Upload Clinical Note")
+
+st.sidebar.markdown("""
+    <p style='
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 12px;
+        margin-top: -10px;
+    '>Example Notes (Click to Download):</p>
 """, unsafe_allow_html=True)
 
-# Create a container for the top content
-with sidebar.container():
-    sidebar.title("Upload Clinical Note")
-    
-    sidebar.markdown("""
-        <p style='
-            font-size: 0.9em;
-            color: #666;
-            margin-bottom: 12px;
-            margin-top: -10px;
-        '>Example Notes (Click to Download):</p>
-    """, unsafe_allow_html=True)
+example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:20px;">'
+for filename in ["ilaeclass1.txt", "ilaeclass2.txt", "ilaeclass3.txt"]:
+    example_files_html += get_file_download_link(filename)
+example_files_html += '</div>'
+st.sidebar.markdown(example_files_html, unsafe_allow_html=True)
+st.sidebar.markdown("<hr style='margin: 0; opacity: 0.2;'>", unsafe_allow_html=True)
 
-    example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:20px;">'
-    for filename in ["ilaeclass1.txt", "ilaeclass2.txt", "ilaeclass3.txt"]:
-        example_files_html += get_file_download_link(filename)
-    example_files_html += '</div>'
-    sidebar.markdown(example_files_html, unsafe_allow_html=True)
-    sidebar.markdown("<hr style='margin: 0; opacity: 0.2;'>", unsafe_allow_html=True)
+uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", type="txt", 
+                                       on_change=reset_session_state)
 
-    uploaded_file = sidebar.file_uploader("Drag and drop your clinical note", type="txt", 
-                                        on_change=reset_session_state)
-
-# Create a container for the bottom content (logo)
-with sidebar.container():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    logo_path = os.path.join(script_dir, "assets", "brainmodlab.png")
-    logo = Image.open(logo_path)
-    sidebar.image(logo, use_column_width=True)
-
-# Process the uploaded file
 if uploaded_file is not None:
     uploaded_file_string = uploaded_file.read().decode("utf-8")
 else:
     uploaded_file_string = ""
 
-# Replace the existing sidebar CSS with this updated version
+# Update the sidebar CSS and logo placement
 st.sidebar.markdown("""
     <style>
-    /* Base sidebar container */
     section[data-testid="stSidebar"] > div {
-        padding-top: 1rem;
-        background-color: #b3dde8;
-    }
-    
-    /* Main content container in sidebar */
-    section[data-testid="stSidebar"] > div:first-child {
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        min-height: 100vh;
-        max-height: 100vh;
-        overflow-y: auto;
     }
-    
-    /* Content wrapper */
     section[data-testid="stSidebar"] > div > div:first-child {
         flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        padding: 0 1rem;
     }
-    
-    /* Logo container */
     section[data-testid="stSidebar"] img {
-        width: 90%;
-        margin: 1rem auto;
-        display: block;
         margin-top: auto;
-    }
-    
-    /* File uploader spacing */
-    section[data-testid="stSidebar"] .stFileUploader {
-        margin-bottom: 1rem;
+        width: 100%;
+        padding: 1rem;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -200,6 +150,13 @@ st.sidebar.markdown("""
 col1, col2, col3 = st.columns([4.5, 0.1, 5.4])
 
 # Move the HIPAA warning to after the logo
+
+# Added code to handle the image path 
+script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
+logo_path = os.path.join(script_dir, "assets", "brainmodlab.png")  # Build the path to the image
+logo = Image.open(logo_path)
+
+st.sidebar.image(logo)
 
 # Add HIPAA warning at the bottom of sidebar
 
