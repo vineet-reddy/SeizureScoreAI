@@ -88,19 +88,6 @@ The system evaluates surgical outcomes based on the following scale[^1]:
 
 [^1]: Source: [MGH Epilepsy Service - Epilepsy Surgery Outcome Scales](https://seizure.mgh.harvard.edu/engel-surgical-outcome-scale/)
 
-## Deployment
-
-To deploy on Streamlit Cloud:
-
-1. Push your code to GitHub
-2. Connect your repository to Streamlit Cloud
-3. Configure the deployment:
-   - Main file path: `streamlit/app.py`
-   - Python version: 3.9+
-4. Add the following secrets in Streamlit Cloud settings:
-   - `OPENAI_API_KEY`
-   - `CLAUDE_API_KEY`
-
 ## Development
 
 ### Project Structure
@@ -115,8 +102,6 @@ SeizureScoreAI/
 ├── test_notes/            # Sample clinical notes (do not contain PHI)
 └── requirements.txt
 ```
-
-### Testing
 
 ### Testing
 
