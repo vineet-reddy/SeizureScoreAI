@@ -161,4 +161,4 @@ If you use this system in your research, please cite:
 
 ### ILAE Outcome Scale Citation
 
-The ILAE Outcome Scale used in this system is sourced from the MGH Epilepsy Service at Harvard Medical School. For more information, visit their [Epilepsy Surgery Outcome Scales page](https://seizure.mgh.harvard.edu/engel-surgical-outcome-scale/).
+The ILAE Outcome Scale used in this system is sourced from the Massachusetts General Hospital Epilepsy Service. For more information, visit their [Epilepsy Surgery Outcome Scales page](https://seizure.mgh.harvard.edu/engel-surgical-outcome-scale/).
