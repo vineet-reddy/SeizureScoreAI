@@ -134,7 +134,7 @@ The system includes a comprehensive set of **synthetically generated test clinic
 
 This project originated at the AI ATL Hackathon and was developed by [Vineet Reddy](https://github.com/vineet-reddy), [Viresh Pati](https://github.com/vireshpati), [Mukesh Paranthaman](https://github.com/MukProgram), and [Sachi Goel](https://github.com/computer-s-2).
 
-- **[Vineet Reddy](https://github.com/vineet-reddy):** Conceived the idea to analyze epilepsy clinic notes and output ILAE scores. Developed the original Named Entity Recognition (NER) system with Viresh Pati. After the hackathon, revamped the project by creating the advanced multi-agent RAG system and updating the user interface.  
+- **[Vineet Reddy](https://github.com/vineet-reddy):** Conceived the idea to analyze epilepsy clinic notes and output ILAE scores. Developed the original Named Entity Recognition (NER) system with Viresh Pati. After the hackathon, revamped the project by creating the current multi-agent RAG system and updating the user interface.  
 - **[Viresh Pati](https://github.com/vireshpati):** Co-designed the initial NER and knowledge graph retrieval-augmented generation (KG RAG) system.  
 - **[Mukesh Paranthaman](https://github.com/MukProgram):** Co-built the backend for the original NER and KG RAG system.  
 - **[Sachi Goel](https://github.com/computer-s-2):** Designed the initial Streamlit frontend.  
