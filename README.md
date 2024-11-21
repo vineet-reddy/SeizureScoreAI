@@ -130,26 +130,17 @@ The system includes a comprehensive set of **synthetically generated test clinic
 - System should be used as a support tool, not a replacement for clinical judgment
 - Performance depends on the quality and completeness of input clinical notes
 
-## Contributing
+## Contributions
 
-1. Fork the repository
-2. Create a feature branch
-3. Submit a pull request with detailed description of changes
+This project originated at the AI ATL Hackathon and was developed by [Vineet Reddy](https://github.com/vineet-reddy), [Viresh Pati](https://github.com/vireshpati), [Mukesh Paranthaman](https://github.com/MukProgram), and [Sachi Goel](https://github.com/computer-s-2).
 
-## Citations
+- **[Vineet Reddy](https://github.com/vineet-reddy):** Conceived the idea to analyze epilepsy clinic notes and output ILAE scores. Developed the original Named Entity Recognition (NER) system with Viresh Pati. After the hackathon, revamped the project by creating the advanced multi-agent RAG system and updating the user interface.  
+- **[Viresh Pati](https://github.com/vireshpati):** Co-designed the initial NER and knowledge graph retrieval-augmented generation (KG RAG) system.  
+- **[Mukesh Paranthaman](https://github.com/MukProgram):** Co-built the backend for the original NER and KG RAG system.  
+- **[Sachi Goel](https://github.com/computer-s-2):** Designed the initial Streamlit frontend.  
+- **[Ananda Badari](https://github.com/abadari3):** Developed the now-deprecated logic for predicting ILAE and Engel scores using the knowledge graph, which informed the current system.
 
-### Software Citation
-
-If you use this system in your research, please cite:
-
-```bibtex
-@software{seizurescoreai2024,
-  author = {Vineet Pasam Reddy},
-  title = {SeizureScoreAI: Multi-Agent Clinical Reasoning System},
-  year = {2024},
-  url = {https://github.com/vineet-reddy/SeizureScoreAI}
-}
-```
+Their foundational work made the advanced multi-agent RAG system and updated interface possible.
 
 ### ILAE Outcome Scale Citation
 
