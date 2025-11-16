@@ -22,6 +22,7 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
    - Key factors influencing the score
    - Clinical reasoning behind the determination
 
+
 ## Technical Architecture
 
 ### Components
@@ -37,32 +38,6 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 2. Structured data → ILAE Score Calculation
 3. Detailed analysis → Concise Reporting
 4. Final output → User presentation
-
-## Installation
-
-1. Clone the repository
-   ```bash
-   git clone https://github.com/vineet-reddy/SeizureScoreAI
-   cd SeizureScoreAI
-   ```
-
-2. Create a virtual environment (recommended)
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. Install the package and dependencies
-   ```bash
-   pip install -e .
-   ```
-
-4. Create a `.env` file with your Gemini API key:
-   ```
-   GEMINI_API_KEY=your_gemini_api_key_here
-   ```
-   
-   You can obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ## Usage
 

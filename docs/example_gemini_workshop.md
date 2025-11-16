@@ -207,103 +207,6 @@ Then:
 3. See extracted entities highlighted in the note
 4. Read the concise and detailed explanations
 
-## Workshop Exercises
-
-### Exercise 1: Understanding Agent Specialization
-
-**Objective**: Modify Agent 1 to extract additional clinical entities
-
-**Tasks**:
-1. Add extraction of "medication names" to Agent 1
-2. Test with example notes
-3. Observe how structured prompting affects extraction quality
-
-### Exercise 2: Improving Clinical Reasoning
-
-**Objective**: Enhance Agent 2's reasoning capabilities
-
-**Tasks**:
-1. Add handling for edge cases (e.g., patients with unknown baseline)
-2. Implement confidence scoring
-3. Test with challenging cases
-
-### Exercise 3: Custom Clinical Application
-
-**Objective**: Build a new multi-agent system for a different clinical task
-
-**Ideas**:
-- Medication side effect extraction
-- Treatment plan summarization
-- Clinical trial eligibility screening
-
-## Advanced Topics
-
-### Rate Limiting and Production Considerations
-
-**Free Tier Limits**: Gemini 2.5 Pro allows 2 requests per minute on the free tier. For production:
-
-```python
-import time
-from tenacity import retry, wait_exponential, stop_after_attempt
-
-@retry(wait=wait_exponential(min=1, max=60), stop=stop_after_attempt(3))
-def call_gemini_with_retry(prompt, model="gemini-2.5-pro"):
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt,
-        config={"response_mime_type": "application/json"}
-    )
-    return json.loads(response.text)
-```
-
-### Structured Output Schemas
-
-For more complex outputs, define explicit JSON schemas:
-
-```python
-schema = {
-    "type": "object",
-    "properties": {
-        "ilae_score": {"type": "string"},
-        "confidence": {"type": "number"},
-        "reasoning_steps": {
-            "type": "array",
-            "items": {"type": "string"}
-        }
-    },
-    "required": ["ilae_score", "confidence"]
-}
-
-response = client.models.generate_content(
-    model="gemini-2.5-pro",
-    contents=prompt,
-    config={
-        "response_mime_type": "application/json",
-        "response_schema": schema
-    }
-)
-```
-
-### Alternative Architectures
-
-**Parallel Processing**: For independent agents, use concurrent execution:
-
-```python
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
-
-async def process_note_parallel(clinical_note):
-    with ThreadPoolExecutor(max_workers=3) as executor:
-        # Execute independent agents in parallel
-        futures = [
-            executor.submit(extract_medications, clinical_note),
-            executor.submit(extract_diagnoses, clinical_note),
-            executor.submit(extract_procedures, clinical_note)
-        ]
-        results = [f.result() for f in futures]
-    return results
-```
-
 ## Real-World Applications
 
 ### Clinical Decision Support
@@ -331,7 +234,6 @@ This architecture can be adapted for:
 
 ### Medical AI Guidelines
 
-- [FDA AI/ML in Healthcare](https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-and-machine-learning-aiml-enabled-medical-devices)
 - [ILAE Outcome Scale](https://seizure.mgh.harvard.edu/engel-surgical-outcome-scale/)
 
 ### Related Workshops
@@ -350,20 +252,6 @@ We welcome contributions! Areas for improvement:
 3. **Evaluation**: Build benchmarks against expert annotations
 4. **UI/UX**: Improve the Streamlit interface
 5. **Documentation**: Add more examples and tutorials
-
-## License
-
-This project is part of the Gemini workshops series. For specific licensing information, see the LICENSE file.
-
-## Acknowledgments
-
-Developed as part of the AI ATL Hackathon by:
-- [Vineet Reddy](https://github.com/vineet-reddy)
-- [Viresh Pati](https://github.com/vireshpati)
-- [Mukesh Paranthaman](https://github.com/MukProgram)
-- [Sachi Goel](https://github.com/computer-s-2)
-
-Migrated to Gemini 2.5 Pro to demonstrate Google's state-of-the-art multi-agent capabilities for clinical AI applications.
 
 ---
 
