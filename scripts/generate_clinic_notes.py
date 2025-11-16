@@ -1,31 +1,31 @@
-import anthropic
+from google import genai
 import os
 from typing import Optional
 
 from dotenv import load_dotenv
-load_dotenv()  # Load environment variables from .env
+load_dotenv()
 
-def setup_client() -> anthropic.Client:
-    """Setup and verify the Anthropic client with API key"""
+def setup_client() -> genai.Client:
+    """Setup and verify the Gemini client with API key"""
     # Try to get API key from environment variable
-    api_key = os.getenv("CLAUDE_API_KEY")
-    
-    # If not found in environment, raise an informative error
+    api_key = os.getenv("GEMINI_API_KEY")
+
     if not api_key:
         raise ValueError(
-            "CLAUDE_API_KEY environment variable not found. "
-            "Please set it using: export CLAUDE_API_KEY='your-key-here' "
+            "GEMINI_API_KEY environment variable not found. "
+            "Please set it using: export GEMINI_API_KEY='your-key-here' "
             "or add it to your environment variables."
         )
+
+    os.environ["GEMINI_API_KEY"] = api_key
     
-    return anthropic.Client(api_key=api_key)
+    return genai.Client()
 
 def generate_clinic_note() -> Optional[str]:
     try:
-        # Initialize client with proper error handling
         client = setup_client()
         
-        # Your existing example clinic note string here...
+        # Example clinic note string here...
         example_clinic_note = """
         Epilepsy Surgery Clinic Note  
         Date: November 17, 2024  
@@ -101,52 +101,40 @@ def generate_clinic_note() -> Optional[str]:
         [Hospital Name]  
         """
 
-        # Create the system prompt
-        system_prompt = """You are an experienced epileptologist creating detailed clinical notes. Generate realistic, 
+        # Create the prompt with system instructions and user request
+        prompt = f"""You are an experienced epileptologist creating detailed clinical notes. Generate realistic, 
         professional clinic notes that maintain patient confidentiality while including comprehensive medical details. 
-        Follow standard medical documentation practices and ensure all relevant clinical information is included."""
+        Follow standard medical documentation practices and ensure all relevant clinical information is included.
 
-        # Create a message using the Messages API
-        response = client.messages.create(
-            model="claude-3-sonnet-20240229",
-            max_tokens=4096,
-            temperature=0.7,
-            system=system_prompt,
-            messages=[
-                {
-                    "role": "user",
-                    "content": f"""Using the following example clinic note as a template, generate a detailed clinic note 
-                    for a different patient who has undergone epilepsy surgery. Include similar sections and formatting, 
-                    and ensure to include information about the patient's:
-                    - Auras
-                    - Seizure frequency before surgery (days per year)
-                    - Seizure frequency after surgery (days per year)
-                    - Current seizure freedom status
-                    - All relevant clinical details
-                    
-                    The note should maintain the same level of detail and professional medical terminology as the example.
-                    All dates should be current relative to today's date of November 17, 2024.
-                    Make the note realistic and comparable to real clinic notes, with different patient details and medical history.
+        Using the following example clinic note as a template, generate a detailed clinic note 
+        for a different patient who has undergone epilepsy surgery. Include similar sections and formatting, 
+        and ensure to include information about the patient's:
+        - Auras
+        - Seizure frequency before surgery (days per year)
+        - Seizure frequency after surgery (days per year)
+        - Current seizure freedom status
+        - All relevant clinical details
+        
+        The note should maintain the same level of detail and professional medical terminology as the example.
+        All dates should be current relative to today's date of November 17, 2024.
+        Make the note realistic and comparable to real clinic notes, with different patient details and medical history.
 
-                    Example Clinic Note:
-                    {example_clinic_note}
-                    """
-                }
-            ]
+        Example Clinic Note:
+        {example_clinic_note}
+        """
+
+        # Generate content using Gemini 2.5 Flash API
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
         )
         
-        return response.content[0].text
+        return response.text
 
     except ValueError as ve:
-        # Handle missing API key error
         print(f"Authentication Error: {str(ve)}")
         return None
-    except anthropic.APIError as ae:
-        # Handle API-specific errors
-        print(f"Anthropic API Error: {str(ae)}")
-        return None
     except Exception as e:
-        # Handle any other unexpected errors
         print(f"Unexpected error: {str(e)}")
         return None
 
@@ -161,7 +149,6 @@ def save_clinic_note(note: str, index: int, output_dir: str = "generated_notes")
 def main():
     num_notes = 10  # Number of clinic notes to generate
     
-    # Verify API key is set before starting the generation process
     try:
         setup_client()
     except ValueError as e:
