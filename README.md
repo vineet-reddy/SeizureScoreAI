@@ -132,18 +132,14 @@ The system includes a comprehensive set of **synthetically generated test clinic
 - System should be used as a support tool, not a replacement for clinical judgment
 - Performance depends on the quality and completeness of input clinical notes
 
-## Contributions
+## Contributing
 
-This project originated at the AI ATL Hackathon and was developed by [Vineet Reddy](https://github.com/vineet-reddy), [Viresh Pati](https://github.com/vireshpati), [Mukesh Paranthaman](https://github.com/MukProgram), and [Sachi Goel](https://github.com/computer-s-2).
+Interested in contributing? Check out [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to get started!
 
-- **[Vineet Reddy](https://github.com/vineet-reddy):** Conceived the idea to analyze epilepsy clinic notes and output ILAE scores. Developed the original Named Entity Recognition (NER) system with Viresh Pati. After the hackathon, rewrote and revamped the project creating the current multi-agent RAG system and updating the user interface.  
-- **[Viresh Pati](https://github.com/vireshpati):** Co-designed the initial NER and designed the initial knowledge graph retrieval-augmented generation (KG RAG) system.  
-- **[Mukesh Paranthaman](https://github.com/MukProgram):** Co-built the backend for the original NER and KG RAG system.  
-- **[Sachi Goel](https://github.com/computer-s-2):** Designed the initial Streamlit frontend.  
-- **[Ananda Badari](https://github.com/abadari3):** Developed the now-deprecated logic for predicting ILAE and Engel scores using knowledge graphs.
+## Project History
 
-Their foundational work made the advanced multi-agent RAG system and updated interface possible.
+This project originated as a proof-of-concept at the AI ATL Hackathon and has since undergone a complete architectural rewrite. The current implementation uses Google's Agent Development Kit with a multi-agent system, representing a fundamental redesign from the original NER/Knowledge Graph approach. See [CONTRIBUTING.md](CONTRIBUTING.md#project-history-and-contributors) for detailed project evolution and contributor information.
 
-### ILAE Outcome Scale Citation
+## Citation
 
 The ILAE Outcome Scale used in this system is sourced from the Massachusetts General Hospital Epilepsy Service. For more information, visit their [Epilepsy Surgery Outcome Scales page](https://seizure.mgh.harvard.edu/engel-surgical-outcome-scale/).
