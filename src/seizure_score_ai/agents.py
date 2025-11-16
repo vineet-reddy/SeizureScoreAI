@@ -1,173 +1,116 @@
 """
-Multi-Agent Clinical Reasoning System using Google Gemini 2.5 Pro
+Multi-Agent Clinical Reasoning System using Google Agent Development Kit (ADK)
 
-This module implements a sequential multi-agent pipeline for processing clinical notes
-and calculating ILAE outcome scores. Each agent is a specialized function that calls
-Google's Gemini 2.5 Pro with tailored prompts.
+This module implements a three-agent pipeline using Google's ADK framework for 
+processing clinical notes and calculating ILAE outcome scores.
 
 Architecture:
-    Agent 1: Clinical Information Extractor
-    Agent 2: ILAE Score Calculator  
-    Agent 3: Concise Explanation Reporter
+    Agent 1: Clinical Information Extractor → extracts structured data
+    Agent 2: ILAE Score Calculator → calculates outcome score
+    Agent 3: Concise Explanation Reporter → generates user-friendly summary
 """
 
-from google import genai
+from google.adk import Runner
+from google.adk.agents import LlmAgent
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
 import os
 from dotenv import load_dotenv
 import json
+import uuid
+import asyncio
 import re
-from typing import Dict, Tuple, Optional
+from typing import Dict, Tuple
 
 # Load environment variables
 load_dotenv(verbose=True)
-
-# Initialize Gemini client
-def setup_gemini_client() -> genai.Client:
-    """Setup and verify the Gemini client with API key"""
-    api_key = os.getenv("GEMINI_API_KEY")
-    
-    if not api_key:
-        raise ValueError(
-            "GEMINI_API_KEY environment variable not found. "
-            "Please set it in your .env file."
-        )
-    
+api_key = os.getenv("GEMINI_API_KEY")
+if api_key:
     os.environ["GEMINI_API_KEY"] = api_key
-    return genai.Client()
 
-# Initialize the global client
-client = setup_gemini_client()
-
-# Model configuration
 GEMINI_MODEL = "gemini-2.5-pro"
 
 
-def extract_clinical_information(clinical_note: str) -> Dict:
+def run_agent(agent: LlmAgent, prompt: str, app_name: str) -> str:
     """
-    Agent 1: Clinical Information Extractor
-    
-    Extracts key clinical entities from the clinical note including:
-    - Presence of seizure freedom
-    - Presence of auras
-    - Baseline seizure days (pre-treatment)
-    - Seizure days per year (post-treatment)
+    Run an ADK agent with a prompt and return the response.
     
     Args:
-        clinical_note: Raw clinical note text
+        agent: The LlmAgent to run
+        prompt: The text prompt
+        app_name: Application name for session
         
     Returns:
-        Dictionary containing extracted entities with values and supporting texts
+        The agent's response as a string
     """
+    session_service = InMemorySessionService()
+    session_id = str(uuid.uuid4())
+    user_id = "default_user"
     
-    prompt = f"""You are a clinical information extractor. Your task is to extract the following entities from the provided clinical note, quoting the exact text from the note that supports each entity.
+    # Create session and runner
+    asyncio.run(session_service.create_session(app_name=app_name, user_id=user_id, session_id=session_id))
+    runner = Runner(app_name=app_name, agent=agent, session_service=session_service)
+    
+    # Create message and run agent
+    message = types.Content(parts=[types.Part(text=prompt)], role="user")
+    
+    # Collect response from event stream
+    response_text = ""
+    for event in runner.run(user_id=user_id, session_id=session_id, new_message=message):
+        if hasattr(event, 'content') and event.content:
+            if hasattr(event.content, 'parts'):
+                for part in event.content.parts:
+                    if hasattr(part, 'text') and part.text:
+                        response_text += part.text
+    
+    return response_text
 
-Entities to extract:
+
+def create_clinical_extractor_agent() -> LlmAgent:
+    """Creates the Clinical Information Extractor agent."""
+    
+    instruction = """You are a clinical information extractor. Extract these entities from the clinical note:
 
 1. **Presence of seizure freedom** (Yes/No/I don't know)
 2. **Presence of auras** (Yes/No/I don't know)
 3. **Baseline seizure days (pre-treatment)** (Numeric value or "I don't know")
 4. **Seizure days per year (post-treatment)** (Numeric value or "I don't know")
 
-For each entity, provide:
+For each entity, provide the value and exact supporting text from the note.
 
-- **Value**: As specified above.
-- **Supporting text**: Exact quote from the clinical note that supports the value.
+**Output only valid JSON in this format:**
 
-**Important Guidelines:**
-
-- **Use only the information in the clinical note**. Do not add any information not present.
-- **Quote the supporting text exactly** as it appears in the clinical note.
-- **Do not paraphrase, summarize, or interpret** beyond the given text.
-- If the information is **not present or cannot be determined**, set the value to "I don't know" and the supporting text to "Not found in the clinical note."
-
-**Output Format:**
-
-Provide **only** the extracted entities in the following JSON format (without any additional text):
-
-{{
-  "presence_of_seizure_freedom": {{
+{
+  "presence_of_seizure_freedom": {
     "value": "...",
     "supporting_text": "..."
-  }},
-  "presence_of_auras": {{
+  },
+  "presence_of_auras": {
     "value": "...",
     "supporting_text": "..."
-  }},
-  "baseline_seizure_days": {{
+  },
+  "baseline_seizure_days": {
     "value": "...",
     "supporting_text": "..."
-  }},
-  "seizure_days_per_year": {{
+  },
+  "seizure_days_per_year": {
     "value": "...",
     "supporting_text": "..."
-  }}
-}}
+  }
+}"""
 
-**Clinical Note:**
-
-{clinical_note}
-"""
-
-    try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config={"response_mime_type": "application/json"}
-        )
-        
-        # Parse the JSON response
-        result = json.loads(response.text)
-        return result
-        
-    except json.JSONDecodeError as e:
-        print(f"JSON parsing error in Agent 1: {e}")
-        print(f"Response text: {response.text}")
-        raise
-    except Exception as e:
-        print(f"Error in Clinical Information Extractor: {e}")
-        raise
+    return LlmAgent(
+        name="ClinicalInformationExtractor",
+        model=GEMINI_MODEL,
+        instruction=instruction,
+        description="Extracts structured clinical information from patient notes"
+    )
 
 
-def calculate_ilae_score(extracted_entities: Dict) -> Dict:
-    """
-    Agent 2: ILAE Score Calculator
+def create_ilae_calculator_agent() -> LlmAgent:
+    """Creates the ILAE Score Calculator agent."""
     
-    Calculates the ILAE outcome score based on extracted clinical information
-    using the ILAE Outcome Scale criteria.
-    
-    Args:
-        extracted_entities: Dictionary of extracted clinical information from Agent 1
-        
-    Returns:
-        Dictionary containing ILAE score and detailed explanation
-    """
-    
-    # Extract values and supporting texts
-    presence_of_seizure_freedom = extracted_entities['presence_of_seizure_freedom']['value']
-    supporting_text_seizure_freedom = extracted_entities['presence_of_seizure_freedom']['supporting_text']
-    
-    presence_of_auras = extracted_entities['presence_of_auras']['value']
-    supporting_text_auras = extracted_entities['presence_of_auras']['supporting_text']
-    
-    baseline_seizure_days = extracted_entities['baseline_seizure_days']['value']
-    supporting_text_baseline = extracted_entities['baseline_seizure_days']['supporting_text']
-    
-    seizure_days_per_year = extracted_entities['seizure_days_per_year']['value']
-    supporting_text_post_treatment = extracted_entities['seizure_days_per_year']['supporting_text']
-    
-    # Calculate percent reduction
-    try:
-        if (str(baseline_seizure_days).lower() == "i don't know" or 
-            str(seizure_days_per_year).lower() == "i don't know"):
-            percent_reduction = "I don't know"
-        else:
-            baseline = float(baseline_seizure_days)
-            post = float(seizure_days_per_year)
-            percent_reduction = ((baseline - post) / baseline) * 100 if baseline > 0 else 0
-    except (ValueError, TypeError):
-        percent_reduction = "I don't know"
-    
-    prompt = f"""You are a medical expert specializing in epilepsy. Your task is to calculate the ILAE score based on the provided clinical information extracted from the clinical note. Use the ILAE Outcome Scale criteria below to determine the correct score. Provide detailed reasoning for each entity influencing the score, citing the exact text from the clinical note that supports your reasoning.
+    instruction = """You are a medical expert specializing in epilepsy. Calculate the ILAE score using these criteria:
 
 **ILAE Outcome Scale:**
 - **Class 1**: Completely seizure free; no auras
@@ -177,120 +120,57 @@ def calculate_ilae_score(extracted_entities: Dict) -> Dict:
 - **Class 5**: Less than 50% reduction of baseline seizure days; ± auras
 - **Class 6**: More than 100% increase of baseline seizure days; ± auras
 
-**Extracted Entities and Supporting Texts:**
-1. Presence of seizure freedom: {presence_of_seizure_freedom}
-   - Supporting text: {supporting_text_seizure_freedom}
-2. Presence of auras: {presence_of_auras}
-   - Supporting text: {supporting_text_auras}
-3. Baseline seizure days (pre-treatment): {baseline_seizure_days}
-   - Supporting text: {supporting_text_baseline}
-4. Seizure days per year (post-treatment): {seizure_days_per_year}
-   - Supporting text: {supporting_text_post_treatment}
-5. Percent reduction in seizure days: {percent_reduction}
+Provide detailed reasoning citing the supporting texts. If you cannot determine the score, set "ilae_score" to "indeterminate".
 
-**Instructions:**
-- Use the provided information to calculate the ILAE score.
-- Provide detailed reasoning for each entity influencing the score.
-- Cite the supporting texts in your reasoning.
-- If any information is uncertain or not available, acknowledge this in your reasoning and proceed based on the available data.
-- **Note**: If the patient has only auras and no other seizures, classify them as **Class 2**, even if baseline and post-treatment seizure days are unknown.
-- **If you cannot determine the ILAE score based on the available data, set `"ilae_score"` to `"indeterminate"`.**
+**Output only valid JSON in this format:**
 
-**Output Format:**
-
-Provide the output in the following JSON format (without any additional text):
-
-{{
+{
   "ilae_score": "...",
   "detailed_explanation": "..."
-}}
+}"""
 
-Calculate the ILAE score using this information.
-"""
-
-    try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config={"response_mime_type": "application/json"}
-        )
-        
-        # Parse the JSON response
-        result = json.loads(response.text)
-        return result
-        
-    except json.JSONDecodeError as e:
-        print(f"JSON parsing error in Agent 2: {e}")
-        print(f"Response text: {response.text}")
-        raise
-    except Exception as e:
-        print(f"Error in ILAE Score Calculator: {e}")
-        raise
+    return LlmAgent(
+        name="ILAEScoreCalculator",
+        model=GEMINI_MODEL,
+        instruction=instruction,
+        description="Calculates ILAE outcome scores based on clinical data"
+    )
 
 
-def generate_concise_explanation(detailed_explanation: str) -> Dict:
-    """
-    Agent 3: Concise Explanation Reporter
+def create_concise_reporter_agent() -> LlmAgent:
+    """Creates the Concise Explanation Reporter agent."""
     
-    Summarizes the detailed ILAE score explanation into a concise format
-    suitable for frontend display.
-    
-    Args:
-        detailed_explanation: Detailed explanation from Agent 2
-        
-    Returns:
-        Dictionary containing concise explanation
-    """
-    
-    prompt = f"""You are an assistant tasked with providing a concise and clear explanation of the ILAE score based on the detailed explanation from the previous calculation. Do not recalculate or re-present the ILAE score. Your role is to summarize the detailed explanation into a concise explanation suitable for display on the frontend.
+    instruction = """Summarize the detailed ILAE explanation into a clear, concise summary for the frontend.
 
-**Instructions:**
+**Output only valid JSON in this format:**
 
-- Summarize the detailed explanation provided.
-- Do not recalculate or re-present the ILAE score.
-- Provide the concise explanation without any unnecessary details.
-
-**Output Format:**
-
-Provide the output in the following JSON format (without any additional text):
-
-{{
+{
   "concise_explanation": "..."
-}}
+}"""
 
-**Detailed Explanation from the previous calculation:**
+    return LlmAgent(
+        name="ConciseExplanationReporter",
+        model=GEMINI_MODEL,
+        instruction=instruction,
+        description="Generates concise explanations of ILAE scores"
+    )
 
-{detailed_explanation}
-"""
 
+def parse_json_response(response_text: str) -> Dict:
+    """Parse JSON from agent response, handling potential formatting issues."""
     try:
-        response = client.models.generate_content(
-            model=GEMINI_MODEL,
-            contents=prompt,
-            config={"response_mime_type": "application/json"}
-        )
-        
-        # Parse the JSON response
-        result = json.loads(response.text)
-        return result
-        
-    except json.JSONDecodeError as e:
-        print(f"JSON parsing error in Agent 3: {e}")
-        print(f"Response text: {response.text}")
-        raise
-    except Exception as e:
-        print(f"Error in Concise Explanation Reporter: {e}")
-        raise
+        return json.loads(response_text)
+    except json.JSONDecodeError:
+        # Try to extract JSON from response
+        json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+        if json_match:
+            return json.loads(json_match.group())
+        raise ValueError("Could not parse response as JSON")
 
 
 def process_clinical_note(clinical_note: str) -> Tuple[Dict, Dict]:
     """
-    Main orchestration function for the multi-agent clinical reasoning pipeline.
-    
-    Processes a clinical note through three sequential agents:
-    1. Clinical Information Extractor
-    2. ILAE Score Calculator
-    3. Concise Explanation Reporter
+    Process a clinical note through the ADK multi-agent pipeline.
     
     Args:
         clinical_note: Raw clinical note text
@@ -301,38 +181,121 @@ def process_clinical_note(clinical_note: str) -> Tuple[Dict, Dict]:
         - detailed_output contains: detailed_explanation
     """
     
+    print("Initializing ADK multi-agent system...")
+    
+    # Step 1: Extract clinical information
+    print("Step 1: Clinical Information Extraction...")
+    extractor = create_clinical_extractor_agent()
+    extraction_response = run_agent(
+        extractor, 
+        f"Extract clinical information from this note:\n\n{clinical_note}",
+        app_name="ClinicalExtractor"
+    )
+    extracted_entities = parse_json_response(extraction_response)
+    
+    # Calculate percent reduction for context
+    baseline = extracted_entities['baseline_seizure_days']['value']
+    post = extracted_entities['seizure_days_per_year']['value']
+    
     try:
-        # Agent 1: Extract clinical information
-        print("Agent 1: Extracting clinical information...")
-        extracted_entities = extract_clinical_information(clinical_note)
-        
-        # Agent 2: Calculate ILAE score
-        print("Agent 2: Calculating ILAE score...")
-        ilae_result = calculate_ilae_score(extracted_entities)
-        
-        ilae_score = ilae_result['ilae_score']
-        detailed_explanation = ilae_result['detailed_explanation']
-        
-        # Agent 3: Generate concise explanation
-        print("Agent 3: Generating concise explanation...")
-        concise_result = generate_concise_explanation(detailed_explanation)
-        
-        concise_explanation = concise_result['concise_explanation']
-        
-        # Prepare final outputs
-        final_output = {
-            "ilae_score": ilae_score,
-            "concise_explanation": concise_explanation,
-            "extracted_entities": extracted_entities
-        }
-        
-        detailed_output = {
-            "detailed_explanation": detailed_explanation
-        }
-        
-        print("Processing complete!")
-        return final_output, detailed_output
-        
-    except Exception as e:
-        print(f"Error in process_clinical_note: {e}")
-        raise
+        if str(baseline).lower() == "i don't know" or str(post).lower() == "i don't know":
+            percent_reduction = "I don't know"
+        else:
+            baseline_val = float(baseline)
+            post_val = float(post)
+            percent_reduction = ((baseline_val - post_val) / baseline_val) * 100 if baseline_val > 0 else 0
+    except (ValueError, TypeError):
+        percent_reduction = "I don't know"
+    
+    # Step 2: Calculate ILAE score
+    print("Step 2: ILAE Score Calculation...")
+    calculator = create_ilae_calculator_agent()
+    calculation_prompt = f"""Calculate the ILAE score using this information:
+
+**Extracted Entities and Supporting Texts:**
+1. Presence of seizure freedom: {extracted_entities['presence_of_seizure_freedom']['value']}
+   - Supporting text: {extracted_entities['presence_of_seizure_freedom']['supporting_text']}
+2. Presence of auras: {extracted_entities['presence_of_auras']['value']}
+   - Supporting text: {extracted_entities['presence_of_auras']['supporting_text']}
+3. Baseline seizure days: {baseline}
+   - Supporting text: {extracted_entities['baseline_seizure_days']['supporting_text']}
+4. Seizure days per year: {post}
+   - Supporting text: {extracted_entities['seizure_days_per_year']['supporting_text']}
+5. Percent reduction: {percent_reduction}
+
+Calculate the ILAE score."""
+    
+    calculation_response = run_agent(calculator, calculation_prompt, app_name="ILAECalculator")
+    ilae_result = parse_json_response(calculation_response)
+    
+    # Step 3: Generate concise explanation
+    print("Step 3: Generating Concise Explanation...")
+    reporter = create_concise_reporter_agent()
+    concise_response = run_agent(
+        reporter,
+        f"Summarize this detailed explanation:\n\n{ilae_result['detailed_explanation']}",
+        app_name="ConciseReporter"
+    )
+    concise_result = parse_json_response(concise_response)
+    
+    # Prepare final outputs
+    final_output = {
+        "ilae_score": ilae_result['ilae_score'],
+        "concise_explanation": concise_result['concise_explanation'],
+        "extracted_entities": extracted_entities
+    }
+    
+    detailed_output = {
+        "detailed_explanation": ilae_result['detailed_explanation']
+    }
+    
+    print("ADK multi-agent processing complete!")
+    return final_output, detailed_output
+
+
+# Maintain legacy function signatures for backward compatibility
+def extract_clinical_information(clinical_note: str) -> Dict:
+    """Extract clinical information from a note (legacy compatibility)."""
+    agent = create_clinical_extractor_agent()
+    response = run_agent(agent, f"Extract clinical information from this note:\n\n{clinical_note}", "ClinicalExtractor")
+    return parse_json_response(response)
+
+
+def calculate_ilae_score(extracted_entities: Dict) -> Dict:
+    """Calculate ILAE score from extracted entities (legacy compatibility)."""
+    baseline = extracted_entities['baseline_seizure_days']['value']
+    post = extracted_entities['seizure_days_per_year']['value']
+    
+    try:
+        if str(baseline).lower() == "i don't know" or str(post).lower() == "i don't know":
+            percent_reduction = "I don't know"
+        else:
+            baseline_val = float(baseline)
+            post_val = float(post)
+            percent_reduction = ((baseline_val - post_val) / baseline_val) * 100 if baseline_val > 0 else 0
+    except (ValueError, TypeError):
+        percent_reduction = "I don't know"
+    
+    prompt = f"""**Extracted Entities and Supporting Texts:**
+1. Presence of seizure freedom: {extracted_entities['presence_of_seizure_freedom']['value']}
+   - Supporting text: {extracted_entities['presence_of_seizure_freedom']['supporting_text']}
+2. Presence of auras: {extracted_entities['presence_of_auras']['value']}
+   - Supporting text: {extracted_entities['presence_of_auras']['supporting_text']}
+3. Baseline seizure days: {baseline}
+   - Supporting text: {extracted_entities['baseline_seizure_days']['supporting_text']}
+4. Seizure days per year: {post}
+   - Supporting text: {extracted_entities['seizure_days_per_year']['supporting_text']}
+5. Percent reduction: {percent_reduction}
+
+Calculate the ILAE score."""
+    
+    agent = create_ilae_calculator_agent()
+    response = run_agent(agent, prompt, "ILAECalculator")
+    return parse_json_response(response)
+
+
+def generate_concise_explanation(detailed_explanation: str) -> Dict:
+    """Generate concise explanation (legacy compatibility)."""
+    agent = create_concise_reporter_agent()
+    response = run_agent(agent, f"Summarize this detailed explanation:\n\n{detailed_explanation}", "ConciseReporter")
+    return parse_json_response(response)

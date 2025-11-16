@@ -1,6 +1,6 @@
 # SeizureScoreAI: Multi-Agent Clinical Reasoning System
 
-A multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. The system uses Google's Gemini 2.5 Pro model in a structured pipeline to process clinical notes and determine post-surgical outcomes. The goal is to teach an LLM to reason like an epileptologist.
+A multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. Built with **Google's Agent Development Kit (ADK)**, the system uses Gemini 2.5 Pro models in a hierarchical agent architecture to process clinical notes and determine post-surgical outcomes. The goal is to teach an LLM to reason like an epileptologist.
 
 ## Overview
 
@@ -28,9 +28,11 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 ### Components
 
 - **Frontend**: Streamlit interface for clinical note input and result display
-- **Backend**: Multi-agent system using Google Gemini 2.5 Pro via the google-genai SDK
-- **Agent Pipeline**: Sequential processing through specialized agents
-- **Structured Output**: JSON-formatted data for consistent processing with Gemini's native JSON mode
+- **Backend**: Multi-agent system built with **Google Agent Development Kit (ADK)**
+- **Agent Framework**: Hierarchical agent architecture using ADK's `LlmAgent` class
+- **Model**: Gemini 2.5 Pro for all agents
+- **Agent Orchestration**: Root orchestrator agent coordinates three specialized sub-agents
+- **Structured Output**: JSON-formatted data for consistent processing
 
 ### Data Flow
 
@@ -72,7 +74,7 @@ SeizureScoreAI/
 ├── src/
 │   └── seizure_score_ai/
 │       ├── __init__.py                          # Package initialization
-│       └── agents.py                            # Multi-agent system using Gemini 2.5 Pro
+│       └── agents.py                            # Multi-agent system using Google ADK with LlmAgent
 ├── app/
 │   ├── streamlit_app.py                         # Streamlit frontend
 │   ├── assets/
@@ -85,7 +87,7 @@ SeizureScoreAI/
 ├── scripts/
 │   └── generate_clinic_notes.py                 # Synthetic clinic note generator
 ├── tests/
-│   └── test_gemini.py                           # Gemini API verification test
+│   └── test_gemini.py                           # API verification test
 ├── data/
 │   └── test_notes/                              # Sample clinical notes (synthetic)
 │       ├── clinic_note_1.txt
@@ -107,10 +109,15 @@ The system includes a comprehensive set of **synthetically generated test clinic
 
 ## Technology Stack
 
-- **LLM Framework**: Google Gemini 2.5 Pro via google-genai SDK
-- **Frontend**: Streamlit
-- **Agent Architecture**: Sequential multi-agent pipeline with structured JSON outputs
+- **AI Framework**: **[Google Agent Development Kit (ADK)](https://google.github.io/adk-docs/)** (`google-adk>=0.3.0`)
+  - **Agent Architecture**: Hierarchical multi-agent system with `LlmAgent` class
+  - **Model**: Gemini 2.5 Pro for all three specialized agents
+  - **Orchestration**: Root agent coordinates sub-agents (Clinical Information Extractor, ILAE Score Calculator, Concise Reporter)
+  - **Runner**: ADK's `Runner` class for agent execution and lifecycle management
+  - **Benefits**: Production-ready framework with built-in tools, memory, observability, and deployment capabilities
+- **Frontend**: Streamlit web application
 - **Programming Language**: Python 3.12+
+- **Environment Management**: python-dotenv for secure API key handling
 
 ## Security Considerations
 - The system is **not currently HIPAA compliant**. Users must ensure that input clinical notes do not contain any Protected Health Information (PHI) before using the system.
