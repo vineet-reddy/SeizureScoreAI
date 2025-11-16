@@ -5,7 +5,6 @@ import json
 import re  # Import the regular expressions module
 from difflib import SequenceMatcher  # Import for sequence matching
 import base64
-from PIL import Image
 import os  # Added to handle file paths
 
 st.set_page_config(layout="wide")
@@ -101,23 +100,52 @@ def get_file_download_link(filename):
 
 # Main app
 
+# Update the sidebar CSS first
+st.markdown("""
+    <style>
+    /* Set default sidebar width but allow resizing */
+    section[data-testid="stSidebar"] {
+        width: 450px;
+    }
+    section[data-testid="stSidebar"] > div {
+        padding-top: 1.5rem;
+    }
+    section[data-testid="stSidebar"] h1 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        padding-top: 0;
+        font-size: 1.5rem;
+    }
+    section[data-testid="stSidebar"] .element-container {
+        margin-bottom: 1rem;
+    }
+    section[data-testid="stSidebar"] div.stFileUploader {
+        padding-top: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    section[data-testid="stSidebar"] hr {
+        margin: 1.5rem 0 !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
 st.sidebar.title("Upload Clinical Note")
 
 st.sidebar.markdown("""
     <p style='
         font-size: 0.9em;
         color: #666;
-        margin-bottom: 12px;
-        margin-top: -10px;
+        margin-bottom: 16px;
+        margin-top: 8px;
     '>Example Notes (Click to Download):</p>
 """, unsafe_allow_html=True)
 
-example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:20px;">'
+example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:24px;">'
 for filename in ["ilaeclass1.txt", "ilaeclass2.txt", "ilaeclass3.txt"]:
     example_files_html += get_file_download_link(filename)
 example_files_html += '</div>'
 st.sidebar.markdown(example_files_html, unsafe_allow_html=True)
-st.sidebar.markdown("<hr style='margin: 0; opacity: 0.2;'>", unsafe_allow_html=True)
+st.sidebar.markdown("<hr style='margin: 20px 0; opacity: 0.2;'>", unsafe_allow_html=True)
 
 uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", type="txt", 
                                        on_change=reset_session_state)
@@ -127,43 +155,7 @@ if uploaded_file is not None:
 else:
     uploaded_file_string = ""
 
-# Update the sidebar CSS - replace the existing sidebar CSS with this
-st.sidebar.markdown("""
-    <style>
-    section[data-testid="stSidebar"] > div {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        padding-top: 2rem;  /* Add padding to top */
-    }
-    section[data-testid="stSidebar"] > div > div:first-child {
-        flex: 0 0 auto;  /* Changed from flex: 1 to prevent stretching */
-    }
-    section[data-testid="stSidebar"] img {
-        margin-top: auto;  /* Push logo to bottom */
-        width: 100%;
-        padding: 1rem;
-    }
-    /* Add these new styles */
-    .element-container:has(div.stTitle) {
-        margin-top: 0 !important;
-        padding-top: 0 !important;
-    }
-    div.stFileUploader {
-        padding-top: 1rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
-# Adjusted columns
-col1, col2, col3 = st.columns([4.5, 0.1, 5.4])
-
-# Added code to handle the image path 
-script_dir = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
-logo_path = os.path.join(script_dir, "assets", "brainmodlab.png")  # Build the path to the image
-logo = Image.open(logo_path)
-
-# Add HIPAA warning before the logo
+# Add HIPAA warning
 st.sidebar.markdown("""
     <div style="
         background-color: #fff3cd;
@@ -171,7 +163,7 @@ st.sidebar.markdown("""
         padding: 0.8rem;
         border-radius: 8px;
         border-left: 4px solid #ffeeba;
-        margin: 0.5rem 0 1rem 0;
+        margin-top: 1.5rem;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         font-size: 0.9em;
     ">
@@ -185,8 +177,8 @@ st.sidebar.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Display logo after the warning
-st.sidebar.image(logo)
+# Adjusted columns
+col1, col2, col3 = st.columns([4.5, 0.1, 5.4])
 
 with col1:
     st.title("ILAE Score Calculator")

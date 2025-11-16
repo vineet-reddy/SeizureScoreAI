@@ -11,7 +11,7 @@ if not api_key:
     print("ERROR: GEMINI_API_KEY not found in environment")
     exit(1)
 
-print(f"API Key found: {api_key[:10]}...")
+print(f"API Key found!")
 
 # Set up client
 os.environ["GEMINI_API_KEY"] = api_key
