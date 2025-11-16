@@ -1,6 +1,6 @@
 # SeizureScoreAI: Multi-Agent Clinical Reasoning System
 
-A multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. The system uses Large Language Models (LLMs) in a structured pipeline to process clinical notes and determine post-surgical outcomes. The goal is to teach an LLM to reason like an epileptologist.
+A multi-agent system designed to emulate epileptologist decision-making for ILAE outcome scoring after epilepsy surgery. The system uses Google's Gemini 2.5 Pro model in a structured pipeline to process clinical notes and determine post-surgical outcomes. The goal is to teach an LLM to reason like an epileptologist.
 
 ## Overview
 
@@ -27,9 +27,9 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 ### Components
 
 - **Frontend**: Streamlit interface for clinical note input and result display
-- **Backend**: Multi-agent system using OpenAI APIs
+- **Backend**: Multi-agent system using Google Gemini 2.5 Pro via the google-genai SDK
 - **Agent Pipeline**: Sequential processing through specialized agents
-- **Structured Output**: JSON-formatted data for consistent processing
+- **Structured Output**: JSON-formatted data for consistent processing with Gemini's native JSON mode
 
 ### Data Flow
 
@@ -57,11 +57,12 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
    pip install -e .
    ```
 
-4. Create a `.env` file with your API keys:
+4. Create a `.env` file with your Gemini API key:
    ```
-   OPENAI_API_KEY=your_openai_key_here
-   CLAUDE_API_KEY=your_claude_key_here
+   GEMINI_API_KEY=your_gemini_api_key_here
    ```
+   
+   You can obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ## Usage
 
@@ -96,7 +97,7 @@ SeizureScoreAI/
 ├── src/
 │   └── seizure_score_ai/
 │       ├── __init__.py                          # Package initialization
-│       └── agents.py                            # Multi-agent system (extractor, calculator, reporter)
+│       └── agents.py                            # Multi-agent system using Gemini 2.5 Pro
 ├── app/
 │   ├── streamlit_app.py                         # Streamlit frontend
 │   ├── assets/
@@ -106,8 +107,10 @@ SeizureScoreAI/
 │   │   ├── ilaeclass2.txt
 │   │   └── ilaeclass3.txt
 │   └── config.toml                              # Streamlit configuration
-├── notebooks/
-│   └── generate_clinic_notes.ipynb              # Test data generation script
+├── scripts/
+│   └── generate_clinic_notes.py                 # Synthetic clinic note generator
+├── tests/
+│   └── test_gemini.py                           # Gemini API verification test
 ├── data/
 │   └── test_notes/                              # Sample clinical notes (synthetic)
 │       ├── clinic_note_1.txt
@@ -118,8 +121,7 @@ SeizureScoreAI/
 │   └── ...                                      # Presentations and documentation
 ├── .env                                         # Environment variables (not in repo)
 ├── .gitignore                                   # Git ignore rules
-├── pyproject.toml                               # Modern Python packaging
-├── requirements.txt                             # Python dependencies (legacy)
+├── requirements.txt                             # Python dependencies
 └── README.md                                    # Project documentation
 ```
 
@@ -127,6 +129,13 @@ SeizureScoreAI/
 
 The system includes a comprehensive set of **synthetically generated test clinical notes** in the `test_notes/` directory, representing various post-surgical outcomes and clinical scenarios. These notes are designed to simulate real-world inputs but **do not contain any Protected Health Information (PHI)**, ensuring compliance with privacy regulations.
 
+
+## Technology Stack
+
+- **LLM Framework**: Google Gemini 2.5 Pro via google-genai SDK
+- **Frontend**: Streamlit
+- **Agent Architecture**: Sequential multi-agent pipeline with structured JSON outputs
+- **Programming Language**: Python 3.12+
 
 ## Security Considerations
 - The system is **not currently HIPAA compliant**. Users must ensure that input clinical notes do not contain any Protected Health Information (PHI) before using the system.
