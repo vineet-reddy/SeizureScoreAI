@@ -1,19 +1,5 @@
 # SeizureScoreAI: Multi-Agent Clinical Reasoning with Gemini
 
-## Workshop Overview
-
-This workshop demonstrates how to build a sophisticated multi-agent clinical reasoning system using Google's Gemini 2.5 Pro. The system processes epilepsy surgery clinic notes and determines ILAE (International League Against Epilepsy) outcome scores through a sequential pipeline of specialized AI agents.
-
-### Key Learning Objectives
-
-- **Multi-Agent Architecture**: Learn how to design and implement a sequential multi-agent system where each agent has a specialized role
-- **Structured Outputs**: Master Gemini's native JSON mode for reliable, parseable responses
-- **Clinical AI Applications**: Understand how to apply LLMs to complex medical decision-making tasks
-- **Prompt Engineering**: Explore effective prompting strategies for information extraction and reasoning
-- **Production Integration**: See how to integrate Gemini agents into a real-world application with a Streamlit frontend
-
-## What This Workshop Demonstrates
-
 ### Gemini 2.5 Pro Capabilities
 
 1. **Advanced Reasoning**: The system demonstrates Gemini's ability to perform multi-step clinical reasoning, matching the decision-making process of medical specialists
