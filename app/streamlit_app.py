@@ -100,52 +100,15 @@ def get_file_download_link(filename):
 
 # Main app
 
-# Update the sidebar CSS first
-st.markdown("""
-    <style>
-    /* Set default sidebar width but allow resizing */
-    section[data-testid="stSidebar"] {
-        width: 530px;
-    }
-    section[data-testid="stSidebar"] > div {
-        padding-top: 1.5rem;
-    }
-    section[data-testid="stSidebar"] h1 {
-        margin-top: 0;
-        margin-bottom: 1.5rem;
-        padding-top: 0;
-        font-size: 1.5rem;
-    }
-    section[data-testid="stSidebar"] .element-container {
-        margin-bottom: 1rem;
-    }
-    section[data-testid="stSidebar"] div.stFileUploader {
-        padding-top: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-    section[data-testid="stSidebar"] hr {
-        margin: 1.5rem 0 !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
 st.sidebar.title("Upload Clinical Note")
 
-st.sidebar.markdown("""
-    <p style='
-        font-size: 0.9em;
-        color: #666;
-        margin-bottom: 16px;
-        margin-top: 8px;
-    '>Example Notes (Click to Download):</p>
-""", unsafe_allow_html=True)
+st.sidebar.write("Example Notes (Click to Download):")
 
-example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:24px;">'
+example_files_html = '<div style="display:flex; justify-content:center; margin-bottom:16px;">'
 for filename in ["ilaeclass1.txt", "ilaeclass2.txt", "ilaeclass3.txt"]:
     example_files_html += get_file_download_link(filename)
 example_files_html += '</div>'
 st.sidebar.markdown(example_files_html, unsafe_allow_html=True)
-st.sidebar.markdown("<hr style='margin: 20px 0; opacity: 0.2;'>", unsafe_allow_html=True)
 
 uploaded_file = st.sidebar.file_uploader("Drag and drop your clinical note", type="txt", 
                                        on_change=reset_session_state)
@@ -163,9 +126,8 @@ st.sidebar.markdown("""
         padding: 0.8rem;
         border-radius: 8px;
         border-left: 4px solid #ffeeba;
-        margin-top: 1.5rem;
+        margin-top: 1rem;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        font-size: 0.9em;
     ">
         <div style="display: flex; align-items: center; margin-bottom: 0.3rem;">
             <span style="font-size: 1.2rem; margin-right: 0.5rem;">⚠️</span>
@@ -310,7 +272,6 @@ st.markdown(
     }
     section[data-testid="stSidebar"] {
         background-color: #b3dde8;
-        padding-top: 0rem;
     }
     div.stButton > button {
         color: #ffffff;
@@ -331,7 +292,6 @@ st.markdown(
     p {
         color: #333333;
     }
-    header {visibility: hidden;}
     div.block-container {
         padding-top: 2rem;
     }
