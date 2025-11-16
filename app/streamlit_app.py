@@ -105,7 +105,7 @@ st.markdown("""
     <style>
     /* Set default sidebar width but allow resizing */
     section[data-testid="stSidebar"] {
-        width: 450px;
+        width: 530px;
     }
     section[data-testid="stSidebar"] > div {
         padding-top: 1.5rem;
