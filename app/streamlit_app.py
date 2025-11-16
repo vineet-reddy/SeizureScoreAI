@@ -1,6 +1,6 @@
 import streamlit as st
 import time
-from ilae_backend import process_clinical_note
+from seizure_score_ai.agents import process_clinical_note
 import json
 import re  # Import the regular expressions module
 from difflib import SequenceMatcher  # Import for sequence matching
@@ -351,3 +351,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+

@@ -52,9 +52,9 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. Install dependencies
+3. Install the package and dependencies
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 4. Create a `.env` file with your API keys:
@@ -67,7 +67,7 @@ SeizureScoreAI employs a three-agent system to process clinical notes and determ
 
 Run the Streamlit application:
 ```bash
-streamlit run streamlit/app.py
+streamlit run app/streamlit_app.py
 ```
 
 The application will:
@@ -93,23 +93,34 @@ The system evaluates surgical outcomes based on the following scale[^1]:
 ### Project Structure
 ```
 SeizureScoreAI/
+├── src/
+│   └── seizure_score_ai/
+│       ├── __init__.py                          # Package initialization
+│       └── agents.py                            # Multi-agent system (extractor, calculator, reporter)
+├── app/
+│   ├── streamlit_app.py                         # Streamlit frontend
+│   ├── assets/
+│   │   └── brainmodlab.png                      # UI assets
+│   ├── example_notes/                           # Example clinical notes for demo
+│   │   ├── ilaeclass1.txt
+│   │   ├── ilaeclass2.txt
+│   │   └── ilaeclass3.txt
+│   └── config.toml                              # Streamlit configuration
+├── notebooks/
+│   └── generate_clinic_notes.ipynb              # Test data generation script
 ├── data/
-│   ├── datagen/
-│   │   └── generate_clinic_notes_claudeapi.ipynb  # Test data generation script
-│   └── test_notes/                               # Sample clinical notes (synthetic)
+│   └── test_notes/                              # Sample clinical notes (synthetic)
 │       ├── clinic_note_1.txt
 │       ├── clinic_note_2.txt
 │       └── ...
 ├── docs/
-│   └── ILAE Knowledge Graph.drawio              # Visual representation of scoring logic
-├── streamlit/
-│   ├── app.py                                   # Streamlit frontend
-│   ├── ilae_backend.py                          # Multi-agent system
-│   └── config.toml                              # Streamlit configuration
+│   ├── ilae_kg.drawio                           # Visual representation of scoring logic
+│   └── ...                                      # Presentations and documentation
 ├── .env                                         # Environment variables (not in repo)
 ├── .gitignore                                   # Git ignore rules
-├── README.md                                    # Project documentation
-└── requirements.txt                             # Python dependencies
+├── pyproject.toml                               # Modern Python packaging
+├── requirements.txt                             # Python dependencies (legacy)
+└── README.md                                    # Project documentation
 ```
 
 ### Testing

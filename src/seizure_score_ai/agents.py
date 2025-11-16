@@ -300,3 +300,4 @@ def process_clinical_note(clinical_note):
 
     # Return both outputs
     return final_output, detailed_output
+
