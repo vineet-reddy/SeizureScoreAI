@@ -138,7 +138,7 @@ Interested in contributing? Check out [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## Project History
 
-This project originated as a proof-of-concept at the AI ATL Hackathon and has since undergone a complete architectural rewrite. The current implementation uses Google's Agent Development Kit with a multi-agent system, representing a fundamental redesign from the original NER/Knowledge Graph approach. See [CONTRIBUTING.md](CONTRIBUTING.md#project-history-and-contributors) for detailed project evolution and contributor information.
+This project originated as a proof-of-concept at the 2024 AI ATL Hackathon and has since undergone a complete architectural rewrite. The current implementation uses Google's Agent Development Kit with a multi-agent system, representing a fundamental redesign from the original NER/Knowledge Graph approach. See [CONTRIBUTING.md](CONTRIBUTING.md#project-history-and-contributors) for detailed project evolution and contributor information.
 
 ## Citation
 
