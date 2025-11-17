@@ -77,8 +77,6 @@ SeizureScoreAI/
 │       └── agents.py                            # Multi-agent system using Google ADK with LlmAgent
 ├── app/
 │   ├── streamlit_app.py                         # Streamlit frontend
-│   ├── assets/
-│   │   └── brainmodlab.png                      # UI assets
 │   ├── example_notes/                           # Example clinical notes for demo
 │   │   ├── ilaeclass1.txt
 │   │   ├── ilaeclass2.txt
