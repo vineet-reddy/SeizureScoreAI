@@ -4,7 +4,7 @@
 
 1. Clone the repo
 2. Install dependencies: `pip install -r requirements.txt`
-3. Add your `GOOGLE_API_KEY` to a `.env` file
+3. Add your `GEMINI_API_KEY` to a `.env` file
 4. Run: `streamlit run app/streamlit_app.py`
 
 ## Contributors

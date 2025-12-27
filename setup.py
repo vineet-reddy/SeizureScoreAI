@@ -9,9 +9,10 @@ setup(
     packages=find_packages(where="src"),
     python_requires=">=3.8",
     install_requires=[
-        "streamlit>=1.31.0",
-        "google-generativeai>=0.8.3",
-        "Pillow>=10.0.0",
+        "streamlit>=1.40.0",
+        "google-adk>=0.3.0",
+        "python-dotenv>=1.0.0",
+        "pillow>=10.0.0",
     ],
 )
 

@@ -1,11 +1,8 @@
 import streamlit as st
-import time
 from seizure_score_ai.agents import process_clinical_note
-import json
-import re  # Import the regular expressions module
-from difflib import SequenceMatcher  # Import for sequence matching
+import re
 import base64
-import os  # Added to handle file paths
+import os
 
 st.set_page_config(layout="wide")
 
@@ -39,19 +36,6 @@ def clean_ilae_score(score):
     else:
         return 'Not available'
 
-# Helper functions for sentence preprocessing and similarity checking
-def preprocess_sentence(s):
-    s = s.lower()
-    s = re.sub(r'[^\w\s]', '', s)  # Remove punctuation
-    s = s.strip()
-    return s
-
-def is_similar(a, b, threshold=0.8):
-    a_processed = preprocess_sentence(a)
-    b_processed = preprocess_sentence(b)
-    return SequenceMatcher(None, a_processed, b_processed).ratio() >= threshold
-
-# Add this function after the imports
 def get_file_download_link(filename):
     try:
         # Added code to handle the file path
