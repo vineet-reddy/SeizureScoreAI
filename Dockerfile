@@ -3,12 +3,11 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy requirements and install
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy all code
+# Copy all code first (needed for setup.py)
 COPY . .
+
+# Install requirements and local package
+RUN pip install --no-cache-dir -r requirements.txt && pip install --no-cache-dir .
 
 # Set port for Cloud Run
 ENV PORT=8080
