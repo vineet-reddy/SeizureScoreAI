@@ -40,5 +40,5 @@ if __name__ == "__main__":
     try:
         test_basic_functionality()
     except Exception as e:
-        print(f"❌ Test failed: {e}")
+        print(f"Test failed: {e}")
         sys.exit(1)

@@ -151,7 +151,7 @@ Example notes demonstrating different ILAE classes are available in `app/example
 
 ## Security Considerations
 
-> ⚠️ **Important**: This system is **not HIPAA compliant**. Do not upload documents containing Protected Health Information (PHI).
+> **Important**: This system is **not HIPAA compliant**. Do not upload documents containing Protected Health Information (PHI).
 
 - API keys are managed through environment variables (`.env` file)
 - Never commit `.env` files to version control
