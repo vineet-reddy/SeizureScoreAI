@@ -28,7 +28,7 @@ api_key = os.getenv("GEMINI_API_KEY")
 if api_key:
     os.environ["GEMINI_API_KEY"] = api_key
 
-GEMINI_MODEL = "gemini-2.5-pro"
+GEMINI_MODEL = "gemini-3-flash-preview"
 
 
 def run_agent(agent: LlmAgent, prompt: str, app_name: str) -> str:
