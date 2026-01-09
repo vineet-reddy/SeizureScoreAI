@@ -114,7 +114,7 @@ Vineet Reddy
 
 > Built with **Google ADK** (Agent Development Kit) + **Gemini 3 Flash**
 >
-> Each agent is an `LlmAgent` with a focused instruction → JSON handoffs → reliable outputs
+> Each agent is an `LLMAgent` with a focused instruction → JSON handoffs → reliable outputs
 
 </div>
 </div>
